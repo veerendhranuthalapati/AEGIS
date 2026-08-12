@@ -1,0 +1,161 @@
+# AEGIS local development / test stack.
+#
+# Hardening notes
+#   - All services run with a non-root user, no-new-privileges, dropped
+#     capabilities, read-only root filesystem (tmpfs /tmp) where possible,
+#     explicit resource limits and an init process for zombie reaping.
+#   - Secrets come from the environment: AEGIS_SECRET_KEY and
+#     AEGIS_POSTGRES_PASSWORD. The defaults below exist only for a local dev
+#     flow; production MUST set strong values (and should not expose the
+#     postgres port to the host).
+#   - mock-api is a DELIBERATELY VULNERABLE test upstream. It is required by
+#     the backend's health gate in this stack but must never be part of a
+#     production deployment.
+#   - frontend is opt-in via the `frontend` profile (nginx SPA + API proxy).
+#
+# Run:  AEGIS_SECRET_KEY=<strong> AEGIS_POSTGRES_PASSWORD=<strong> docker compose up -d
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: aegis
+      POSTGRES_PASSWORD: ${AEGIS_POSTGRES_PASSWORD:-aegis}
+      POSTGRES_DB: aegis
+    ports:
+      - "5433:5432"
+    volumes:
+      - aegis_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U aegis -d aegis"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    security_opt:
+      - no-new-privileges:true
+    init: true
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "1.5"
+          memory: 1g
+
+  mock-api:
+    build: ./attack_lab/targets/mock_api
+    environment:
+      DATA_DIR: /data
+    ports:
+      - "8100:8100"
+    volumes:
+      - mock_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "python -c 'import urllib.request;urllib.request.urlopen(\"http://localhost:8100/health\")'"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    security_opt:
+      - no-new-privileges:true
+    init: true
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256m
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_URL: postgresql+asyncpg://aegis:${AEGIS_POSTGRES_PASSWORD:-aegis}@postgres:5432/aegis
+      UPSTREAM_BASE_URL: http://mock-api:8100
+      SECRET_KEY: ${AEGIS_SECRET_KEY:-dev-secret-change-me}
+      ENVIRONMENT: development
+      ML_MODEL_DIR: /models
+    command: ["sh", "-c", "alembic upgrade head && exec uvicorn app.main:app --host 0.0.0.0 --port 8000"]
+    ports:
+      - "8000:8000"
+    volumes:
+      - model_artifacts:/models
+    tmpfs:
+      - /tmp
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    init: true
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mock-api:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "python -c 'import urllib.request;urllib.request.urlopen(\"http://localhost:8000/health\")'"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 1g
+
+  worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: ["python", "-m", "app.worker.main"]
+    environment:
+      DATABASE_URL: postgresql+asyncpg://aegis:${AEGIS_POSTGRES_PASSWORD:-aegis}@postgres:5432/aegis
+      UPSTREAM_BASE_URL: http://mock-api:8100
+      SECRET_KEY: ${AEGIS_SECRET_KEY:-dev-secret-change-me}
+      ENVIRONMENT: development
+      ML_MODEL_DIR: /models
+    volumes:
+      - model_artifacts:/models
+    tmpfs:
+      - /tmp
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    init: true
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mock-api:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 512m
+
+  # frontend serves SPA; nginx proxies /api to backend on the compose network
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:8080"
+    profiles:
+      - frontend
+    depends_on:
+      backend:
+        condition: service_healthy
+    security_opt:
+      - no-new-privileges:true
+    init: true
+    restart: unless-stopped
+
+volumes:
+  aegis_pgdata:
+  model_artifacts:
+  mock_data:

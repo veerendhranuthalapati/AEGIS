@@ -1,0 +1,62 @@
+{
+  "pages": {
+    "dashboard_overview": {
+      "status": 200,
+      "ok": true
+    },
+    "dashboard_requests": {
+      "status": 200,
+      "ok": true
+    },
+    "threats": {
+      "status": 200,
+      "ok": true
+    },
+    "incidents": {
+      "status": 200,
+      "ok": true
+    },
+    "events": {
+      "status": 200,
+      "ok": true
+    },
+    "policies": {
+      "status": 200,
+      "ok": true
+    },
+    "users": {
+      "status": 200,
+      "ok": true
+    },
+    "ml_models": {
+      "status": 200,
+      "ok": true
+    },
+    "audit": {
+      "status": 200,
+      "ok": true
+    },
+    "tools": {
+      "status": 200,
+      "ok": true
+    },
+    "approvals": {
+      "status": 200,
+      "ok": true
+    },
+    "auth_me": {
+      "status": 200,
+      "ok": true
+    }
+  },
+  "errors": {
+    "no_auth": {
+      "status": 401,
+      "ok": true
+    },
+    "alice_users": {
+      "status": 403,
+      "ok": true
+    }
+  }
+}

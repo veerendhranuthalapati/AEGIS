@@ -1,0 +1,35 @@
+/* AEGIS SOC UI — backend-derived data only */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply antialiased;
+}
+
+@layer components {
+  .panel {
+    @apply rounded-lg border border-soc-border bg-soc-panel p-4;
+  }
+  .btn-primary {
+    @apply rounded-md bg-soc-accent px-4 py-2 text-sm font-medium text-white hover:bg-blue-600 disabled:opacity-50;
+  }
+  .btn-ghost {
+    @apply rounded-md px-3 py-2 text-sm text-slate-300 hover:bg-soc-border;
+  }
+  .input {
+    @apply w-full rounded-md border border-soc-border bg-soc-bg px-3 py-2 text-sm text-slate-100 placeholder:text-soc-muted focus:border-soc-accent focus:outline-none;
+  }
+  .badge-critical {
+    @apply rounded px-2 py-0.5 text-xs font-semibold uppercase bg-red-900/50 text-red-300;
+  }
+  .badge-high {
+    @apply rounded px-2 py-0.5 text-xs font-semibold uppercase bg-orange-900/50 text-orange-300;
+  }
+  .badge-medium {
+    @apply rounded px-2 py-0.5 text-xs font-semibold uppercase bg-yellow-900/50 text-yellow-300;
+  }
+  .badge-low {
+    @apply rounded px-2 py-0.5 text-xs font-semibold uppercase bg-green-900/50 text-green-300;
+  }
+}
