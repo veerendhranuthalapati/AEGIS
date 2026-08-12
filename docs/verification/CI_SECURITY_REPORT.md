@@ -178,3 +178,5 @@ Enable in repository settings (not configurable from files alone):
 ## Final classification
 
 **PRODUCTION-ORIENTED PROTOTYPE** — CI enforces tests, types, attack scenarios, and runtime dependency audit; container and dev-toolchain findings remain documented honestly.
+
+**Initial commit:** `9ccbc78` — `feat: establish AEGIS security gateway platform`
