@@ -22,5 +22,27 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "evidence" {
   }
 }
 
+resource "aws_s3_bucket_versioning" "evidence" {
+  bucket = aws_s3_bucket.evidence.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "aws_s3_bucket_lifecycle_configuration" "evidence" {
+  bucket = aws_s3_bucket.evidence.id
+  rule {
+    id     = "expire-old-evidence"
+    status = "Enabled"
+    filter {}
+    noncurrent_version_expiration {
+      noncurrent_days = 90
+    }
+    expiration {
+      days = 365
+    }
+  }
+}
+
 output "bucket_name" { value = aws_s3_bucket.evidence.id }
 output "bucket_arn" { value = aws_s3_bucket.evidence.arn }

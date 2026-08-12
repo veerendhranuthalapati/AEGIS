@@ -31,7 +31,7 @@ terraform validate
 
 Target topology: WAF → ALB → ECS/Fargate → AEGIS | RDS (private) | S3 | SQS | Secrets Manager | CloudWatch.
 
-See [CLOUD_SECURITY.md](CLOUD_SECURITY.md).
+See [AWS_DEPLOYMENT.md](AWS_DEPLOYMENT.md) (full guide) and [CLOUD_SECURITY.md](CLOUD_SECURITY.md).
 
 ## Secrets
 

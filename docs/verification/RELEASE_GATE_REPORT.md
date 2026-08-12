@@ -273,7 +273,7 @@ Legitimate API read body contains: `[EMAIL REDACTED]`, `[SSN REDACTED]`, `[API K
 
 **PRODUCTION-ORIENTED PROTOTYPE**
 
-Evidence supports strong security verification (160 tests, 16/16 attack lab, E2E pass, real frontend on real APIs, Docker builds) but not production-ready (synthetic ML, mock LLM, encoding bypass, no deployed infra, no full CI gate on attack lab).
+Evidence supports strong security verification (170 backend tests, 16/16 attack lab, bypass 15/15, frontend on real APIs, Docker builds) but not production-ready (synthetic ML, mock LLM, no deployed infra). CI attack-lab job is now blocking.
 
 ---
 

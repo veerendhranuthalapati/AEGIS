@@ -1,5 +1,10 @@
 variable "environment" { type = string }
 variable "project" { type = string }
+variable "database_url_secret_arn" { type = string }
+variable "aws_region" { type = string }
+variable "aws_account_id" { type = string }
+variable "events_queue_name" { type = string }
+variable "evidence_bucket_name" { type = string }
 
 data "aws_iam_policy_document" "ecs_assume" {
   statement {
@@ -23,14 +28,14 @@ resource "aws_iam_role_policy_attachment" "ecs_execution" {
 
 data "aws_iam_policy_document" "ecs_execution_secrets" {
   statement {
-    sid    = "ReadSecrets"
+    sid    = "ReadRuntimeSecrets"
     effect = "Allow"
     actions = [
       "secretsmanager:GetSecretValue"
     ]
     resources = [
       aws_secretsmanager_secret.jwt.arn,
-      aws_secretsmanager_secret.db_url.arn
+      var.database_url_secret_arn
     ]
   }
 }
@@ -54,7 +59,7 @@ data "aws_iam_policy_document" "ecs_task" {
       "s3:PutObject",
       "s3:GetObject"
     ]
-    resources = ["arn:aws:s3:::${var.project}-${var.environment}-evidence/*"]
+    resources = ["arn:aws:s3:::${var.evidence_bucket_name}/*"]
   }
   statement {
     sid    = "PublishEvents"
@@ -63,7 +68,7 @@ data "aws_iam_policy_document" "ecs_task" {
       "sqs:SendMessage",
       "sqs:GetQueueAttributes"
     ]
-    resources = ["arn:aws:sqs:*:*:${var.project}-${var.environment}-events"]
+    resources = ["arn:aws:sqs:${var.aws_region}:${var.aws_account_id}:${var.events_queue_name}"]
   }
 }
 
@@ -85,9 +90,10 @@ data "aws_iam_policy_document" "worker_task" {
     actions = [
       "sqs:ReceiveMessage",
       "sqs:DeleteMessage",
-      "sqs:GetQueueAttributes"
+      "sqs:GetQueueAttributes",
+      "sqs:ChangeMessageVisibility"
     ]
-    resources = ["arn:aws:sqs:*:*:${var.project}-${var.environment}-events"]
+    resources = ["arn:aws:sqs:${var.aws_region}:${var.aws_account_id}:${var.events_queue_name}"]
   }
 }
 
@@ -99,10 +105,6 @@ resource "aws_iam_role_policy" "worker_task" {
 
 resource "aws_secretsmanager_secret" "jwt" {
   name = "${var.project}/${var.environment}/jwt"
-}
-
-resource "aws_secretsmanager_secret" "db_url" {
-  name = "${var.project}/${var.environment}/database-url"
 }
 
 output "ecs_execution_role_arn" { value = aws_iam_role.ecs_execution.arn }

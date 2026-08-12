@@ -1,0 +1,16 @@
+# Copy to terraform.tfvars and customize before terraform plan/apply.
+# Do NOT commit terraform.tfvars — it may contain account-specific values.
+
+aws_region   = "us-east-1"
+environment  = "dev"
+project_name = "aegis"
+
+# Replace before deploy:
+acm_certificate_arn = "arn:aws:acm:us-east-1:ACCOUNT_ID:certificate/CERT_ID"
+backend_image       = "ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/aegis-backend:latest"
+worker_image        = "ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/aegis-backend:latest"
+
+# Production hardening (enable before prod apply):
+# db_deletion_protection = true
+# db_skip_final_snapshot = false
+# db_backup_retention_days = 14

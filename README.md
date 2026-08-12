@@ -2,117 +2,75 @@
 
 **AI-Powered API & LLM Security Gateway**
 
-**Classification:** Production-oriented prototype (not production-ready)
+**Classification:** Production-oriented prototype — **not production-ready**, **not AWS-deployed**
 
 ---
 
-## Problem
+## What
 
-Modern applications expose REST APIs, LLMs, and AI agents that introduce new attack surfaces: injection, broken object-level authorization (BOLA), SSRF, prompt manipulation, unauthorized tool use, and sensitive data leakage. Traditional WAFs and API gateways often lack LLM-aware inspection, behavioral context, and policy-driven response controls in one place.
+AEGIS is a security gateway that sits in front of upstream APIs and LLM endpoints. It inspects every request through layered detection and returns ALLOW, WARN, REQUIRE_REVIEW, BLOCK, or REQUIRE_APPROVAL before traffic reaches your application.
 
-## Solution
+## Why
 
-AEGIS sits in front of upstream APIs and LLM endpoints and provides:
+Modern applications expose REST APIs, LLM chat endpoints, and AI-agent tool calls — attack surfaces that traditional WAFs rarely inspect with full context. AEGIS demonstrates unified API security, LLM prompt controls, behavioral analytics, ML scoring, policy enforcement, and SOC visibility in one system.
 
-- **API security** — deterministic rules for SQLi, SSRF, path traversal, command injection, BOLA
-- **Behavioral detection** — request-rate and enumeration signals
-- **ML anomaly detection** — Isolation Forest + Random Forest on behavioral features (**synthetic training data**)
-- **LLM security** — prompt injection / jailbreak heuristics; output redaction
-- **AI agent / tool authorization** — registry, risk scoring, approval workflows
-- **Risk scoring & policy enforcement** — aggregated decisions: ALLOW, WARN, REQUIRE_REVIEW, BLOCK
-- **Incident correlation** — async worker groups related security events
-- **Response controls** — block, review, redact, rate limit, require approval
-- **SOC dashboard** — React UI over the control-plane API
+## How
 
-## Architecture
+Layered, synchronous inspection pipeline:
 
 ```
-                    ┌─────────────────────────────────────────┐
-  Clients / Bots    │              AEGIS Gateway               │
-  ───────────────►  │  Auth → Rules → Behavior → ML → LLM     │
-                    │         ↓ Risk → Policy → Decision       │
-                    └───────────┬──────────────┬──────────────┘
-                                │              │
-                     block/review│              │ allow + forward
-                                │              ▼
-                                │     ┌─────────────────┐
-                                │     │  Mock / Upstream │
-                                │     │  API + LLM echo  │
-                                │     └─────────────────┘
-                                ▼
-                    ┌─────────────────────────────────────────┐
-                    │ PostgreSQL — telemetry, events,         │
-                    │ incidents, policies, approvals, ML meta   │
-                    └─────────────────────────────────────────┘
-                                ▲
-                                │ correlate
-                    ┌───────────┴──────────────┐
-                    │   Correlation worker      │
-                    └──────────────────────────┘
-
-  Operators ──► React SOC UI ──► Control-plane REST API
+Rules → Behavioral detection → ML → LLM security → Risk → Policy → Decision → Upstream
 ```
 
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for component detail.
+Async path (does not gate enforcement): security events → correlation worker → incidents → dashboard.
 
-## Technology
+| Layer | Implementation |
+|-------|----------------|
+| Rules | SQLi, SSRF, path traversal, cmd injection, BOLA (modeled routes) |
+| Behavioral | Rate, enumeration, auth-failure signals from PostgreSQL |
+| ML | Isolation Forest + Random Forest (**synthetic training data**) |
+| LLM | Prompt injection heuristics; output redaction |
+| Policy | YAML policy engine + risk aggregation |
+| Agent | Tool registry, subject scope, approval workflow |
 
-| Layer | Stack |
-|-------|--------|
-| Backend | FastAPI, Python 3.13 |
-| Database | PostgreSQL |
-| ML | scikit-learn — Isolation Forest + Random Forest |
-| Frontend | React, TypeScript, Vite, Tailwind |
-| Infrastructure | Docker Compose; Terraform/AWS design (**defined, not deployed**) |
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for diagrams (LOCAL vs CLOUD-DESIGNED).
 
-## Security demonstration
+## Demo
 
-Examples verified via attack lab and gateway tests (mock upstream only):
-
-| Scenario | Typical decision |
-|----------|------------------|
-| BOLA (cross-subject) | **BLOCK** |
-| SQL injection (incl. encoded variants) | **BLOCK** |
-| SSRF | **BLOCK** |
-| Prompt injection | **REQUIRE_REVIEW** |
-| Unauthorized tool | **BLOCK** |
-| High-value payment | **REQUIRE_APPROVAL** |
-| Admin approval flow | **EXECUTE** after approve |
-
-Run: `attack_lab/scripts/run_all.py` and `attack_lab/bypass_tests/run_bypass.py`.
-
-## Testing
-
-Verified on 2026-08-13 (post plus-encoded SQLi fix):
-
-| Check | Result |
-|-------|--------|
-| Backend pytest | **169 passed** (170 with optional Postgres integration test when DB available) |
-| Ruff | **PASS** |
-| Mypy (`app/`) | **0 errors** |
+| Asset | Count / status |
+|-------|----------------|
+| Attack scenarios | **16/16 PASS** ([attack lab](docs/ATTACK_LAB.md)) |
+| Encoding bypass tests | **15/15 PASS** |
+| Backend tests | **170 collected** (169–170 pass depending on DB isolation) |
 | Frontend tests | **7/7 PASS** |
-| Frontend build | **PASS** |
-| Attack lab | **16/16 PASS** |
-| Bypass suite | **15/15 PASS** |
-| E2E | See [docs/verification/FINAL_RELEASE_REPORT.md](docs/verification/FINAL_RELEASE_REPORT.md) |
+| SOC UI | Dashboard, incidents, approvals, ML, audit |
+| Approval workflow | REQUIRE_APPROVAL → admin approve → execute |
+| Incident correlation | Worker + MITRE-tagged incidents |
 
-```powershell
-cd backend; .\.venv\Scripts\python.exe -m pytest tests -q
-cd ..; backend\.venv\Scripts\python.exe e2e.py
-cd attack_lab\scripts; ..\..\backend\.venv\Scripts\python.exe run_all.py
-cd frontend; npm test; npm run build
+5-minute walkthrough: [docs/DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md)
+
+## Limitations (not hidden)
+
+| Area | Reality |
+|------|---------|
+| ML | **Synthetic dataset** — metrics show pipeline behavior, not real-world accuracy |
+| LLM | **Mock/echo upstream** — no live provider in default stack |
+| Cloud | **Terraform defined — AWS not deployed** |
+| Detection | **Heuristic** — regex + normalization; encoding evasion is an ongoing concern |
+| Performance | **~215 ms** measured serial gateway overhead locally; **~4 req/s** — not production capacity |
+| Scope | Demonstrated against **16 controlled scenarios**, not all attacks |
+
+Full honesty: [docs/LIMITATIONS.md](docs/LIMITATIONS.md)
+
+---
+
+## Architecture (summary)
+
 ```
-
-## Limitations
-
-- **ML dataset is synthetic** — metrics demonstrate pipeline behavior, not production detection quality
-- **LLM upstream is mock/echo** — no live provider integration in default stack
-- **AWS is not deployed** — Terraform modules exist for design review only
-- **Performance** — measured gateway overhead documented in [docs/PERFORMANCE.md](docs/PERFORMANCE.md)
-- **Heuristic detection** — encoding evasions require ongoing normalization; not a substitute for parameterized queries and app-layer controls
-- **BOLA coverage** — limited to known ownership semantics on selected routes
-
-This honesty is intentional: AEGIS is a **production-oriented prototype** suitable for portfolio demonstration and further hardening, not a certified production WAF replacement.
+Client → [WAF/ALB — cloud designed] → AEGIS Gateway → Upstream (mock in dev)
+              ↓
+         PostgreSQL ← Worker → Incidents → React SOC UI
+```
 
 ## Quick start (Windows)
 
@@ -130,30 +88,43 @@ cd ..
 docker compose up -d postgres mock-api
 cd backend
 .\.venv\Scripts\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000
-# separate terminal: .\.venv\Scripts\python.exe -m app.worker.main
 
 cd ..\frontend
 npm install
 npm run dev
-# http://127.0.0.1:5173 — login: admin / Admin@1234
+# http://127.0.0.1:5173 — admin / Admin@1234
 ```
 
-Copy [.env.example](.env.example) for local configuration.
+Copy [.env.example](.env.example) for configuration reference.
 
-## Seed users (development only)
+## Testing (2026-08-13 freeze)
 
-| User | Password | Role |
-|------|----------|------|
-| admin | Admin@1234 | admin |
-| operator | Operator@1234 | operator |
-| alice | Alice@1234 | user |
-| bob | Bob@1234 | user |
+| Check | Result |
+|-------|--------|
+| pytest | 169–170 pass |
+| Ruff / Mypy | PASS / 0 errors |
+| Attack lab | **16/16** |
+| Bypass suite | **15/15** |
+| Frontend | **7/7** + build PASS |
+| Docker build | PASS |
+
+Details: [docs/verification/FINAL_TEST_MATRIX.md](docs/verification/FINAL_TEST_MATRIX.md)
+
+## Portfolio & interview
+
+| Doc | Purpose |
+|-----|---------|
+| [RESUME.md](docs/RESUME.md) | Resume bullets |
+| [INTERVIEW_GUIDE.md](docs/INTERVIEW_GUIDE.md) | 44 prepared Q&A |
+| [DEMO_SCRIPT.md](docs/DEMO_SCRIPT.md) | Live demo steps |
+| [PROJECT_STORY.md](docs/PROJECT_STORY.md) | Engineering narrative |
+| [PROJECT_COMPLETION_REPORT.md](docs/verification/PROJECT_COMPLETION_REPORT.md) | Final status |
 
 ## Documentation
 
 - [SECURITY.md](docs/SECURITY.md) · [THREAT_MODEL.md](docs/THREAT_MODEL.md)
 - [ATTACK_LAB.md](docs/ATTACK_LAB.md) · [ML_EVALUATION.md](docs/ML_EVALUATION.md)
-- [CLOUD_SECURITY.md](docs/CLOUD_SECURITY.md) · [DEPLOYMENT.md](docs/DEPLOYMENT.md)
+- [PERFORMANCE.md](docs/PERFORMANCE.md) · [AWS_DEPLOYMENT.md](docs/AWS_DEPLOYMENT.md)
 - [ARCHITECTURE.md](docs/ARCHITECTURE.md) · [DEVELOPMENT.md](docs/DEVELOPMENT.md)
 
 ## License
