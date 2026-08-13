@@ -1,0 +1,125 @@
+{
+ "results": [
+  {
+   "category": "sqli",
+   "name": "url_encoded",
+   "expected": "BLOCK",
+   "status_code": 403,
+   "decision": "BLOCK",
+   "status": "PASS"
+  },
+  {
+   "category": "sqli",
+   "name": "double_encoded",
+   "expected": "BLOCK",
+   "status_code": 403,
+   "decision": "BLOCK",
+   "status": "PASS"
+  },
+  {
+   "category": "sqli",
+   "name": "plus_encoded",
+   "expected": "BLOCK",
+   "status_code": 403,
+   "decision": "BLOCK",
+   "status": "PASS"
+  },
+  {
+   "category": "sqli",
+   "name": "mixed_case",
+   "expected": "BLOCK",
+   "status_code": 403,
+   "decision": "BLOCK",
+   "status": "PASS"
+  },
+  {
+   "category": "path_traversal",
+   "name": "encoded",
+   "expected": "BLOCK",
+   "status_code": 403,
+   "decision": "BLOCK",
+   "status": "PASS"
+  },
+  {
+   "category": "path_traversal",
+   "name": "double_encoded",
+   "expected": "BLOCK",
+   "status_code": 403,
+   "decision": "BLOCK",
+   "status": "PASS"
+  },
+  {
+   "category": "ssrf",
+   "name": "metadata_ip",
+   "expected": "BLOCK",
+   "status_code": 403,
+   "decision": "BLOCK",
+   "status": "PASS"
+  },
+  {
+   "category": "ssrf",
+   "name": "decimal_ip",
+   "expected": "BLOCK",
+   "status_code": 403,
+   "decision": "BLOCK",
+   "status": "PASS"
+  },
+  {
+   "category": "cmd_injection",
+   "name": "semicolon",
+   "expected": "BLOCK",
+   "status_code": 403,
+   "decision": "BLOCK",
+   "status": "PASS"
+  },
+  {
+   "category": "cmd_injection",
+   "name": "pipe",
+   "expected": "BLOCK",
+   "status_code": 403,
+   "decision": "BLOCK",
+   "status": "PASS"
+  },
+  {
+   "category": "bola",
+   "name": "users_cross_subject",
+   "expected": "BLOCK",
+   "status_code": 403,
+   "decision": "BLOCK",
+   "status": "PASS"
+  },
+  {
+   "category": "bola",
+   "name": "users_own",
+   "expected": "ALLOW",
+   "status_code": 200,
+   "decision": null,
+   "status": "PASS"
+  },
+  {
+   "category": "bola",
+   "name": "orders_cross_subject",
+   "expected": "BLOCK",
+   "status_code": 403,
+   "decision": "BLOCK",
+   "status": "PASS"
+  },
+  {
+   "category": "bola",
+   "name": "orders_own",
+   "expected": "ALLOW",
+   "status_code": 200,
+   "decision": null,
+   "status": "PASS"
+  },
+  {
+   "category": "legitimate",
+   "name": "public_products",
+   "expected": "ALLOW",
+   "status_code": 200,
+   "decision": "ALLOW",
+   "status": "PASS"
+  }
+ ],
+ "failures": 0
+}

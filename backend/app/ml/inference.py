@@ -2,6 +2,9 @@
 
 Loads the active model artifacts once and caches them. Predictions are
 recorded so model behavior is auditable and measurable.
+
+When ML is disabled or fails, ``available=False`` — scores are NOT treated
+as benign low-risk; the risk engine excludes the ML weight.
 """
 from __future__ import annotations
 
@@ -16,6 +19,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import get_settings
 from app.metrics import observe_ml
+from app.ml.drift import get_drift_monitor
 from app.ml.features import REQUEST_FEATURES, features_from_request
 from app.ml.registry import get_latest_active
 from app.models import ModelPrediction
@@ -67,6 +71,7 @@ class MlInferenceService:
                     "name": version.name,
                     "algorithm": version.algorithm,
                     "feature_names": version.feature_names or REQUEST_FEATURES,
+                    "version_number": version.version,
                 }
                 self._load_failed = False
                 return True
@@ -80,56 +85,73 @@ class MlInferenceService:
     ) -> MlPrediction:
         if not self._settings.ml_enabled:
             observe_ml("disabled", 0.0)
-            return MlPrediction(0.0, False, 0.0, {}, 0.0)
+            return MlPrediction(0.0, False, 0.0, {}, 0.0, available=False)
 
         loaded = await self.load_active(session)
         if not loaded or self._models is None:
             observe_ml("unavailable", 0.0)
-            return MlPrediction(0.0, False, 0.0, {}, 0.0)
+            return MlPrediction(0.0, False, 0.0, {}, 0.0, available=False)
 
         models = self._models
         feature_dict = features_from_request(ctx, stats)
-        features_vector = np.array(
-            [feature_dict[name] for name in models["feature_names"]],
-            dtype=np.float64,
-        ).reshape(1, -1)
 
-        start = time.perf_counter()
-        iforest = models["iforest"]
-        rfc = models["rfc"]
-        raw = float(iforest.decision_function(features_vector)[0])
-        anomaly = 1.0 / (1.0 + np.exp(-(-raw + 0.5) / 0.25))
-        threat = float(rfc.predict_proba(features_vector)[0, 1])
-        latency_ms = (time.perf_counter() - start) * 1000
+        try:
+            features_vector = np.array(
+                [feature_dict[name] for name in models["feature_names"]],
+                dtype=np.float64,
+            ).reshape(1, -1)
 
-        is_anomaly = bool(
-            anomaly
-            >= max(0.0, min(1.0, self._settings.ml_anomaly_threshold))
-        ) or bool(threat >= 0.5)
+            start = time.perf_counter()
+            iforest = models["iforest"]
+            rfc = models["rfc"]
+            raw = float(iforest.decision_function(features_vector)[0])
+            anomaly = 1.0 / (1.0 + np.exp(-(-raw + 0.5) / 0.25))
+            threat = float(rfc.predict_proba(features_vector)[0, 1])
+            latency_ms = (time.perf_counter() - start) * 1000
 
-        prediction = MlPrediction(
-            anomaly_score=round(float(anomaly), 4),
-            is_anomaly=is_anomaly,
-            threat_probability=round(threat, 4),
-            features={k: round(v, 4) for k, v in feature_dict.items()},
-            latency_ms=round(latency_ms, 3),
-            model_name=models["name"],
-            model_version_id=models["version_id"],
-            model_algorithm=models["algorithm"],
-            available=True,
-        )
-        observe_ml("available", latency_ms)
+            is_anomaly = bool(
+                anomaly
+                >= max(0.0, min(1.0, self._settings.ml_anomaly_threshold))
+            ) or bool(threat >= 0.5)
 
-        record = ModelPrediction(
-            request_id=ctx.request_id,
-            model_version_id=models["version_id"],
-            model_name=models["name"],
-            model_algorithm=models["algorithm"],
-            anomaly_score=prediction.anomaly_score,
-            is_anomaly=prediction.is_anomaly,
-            threat_probability=prediction.threat_probability,
-            features=prediction.features,
-            latency_ms=prediction.latency_ms,
-        )
-        session.add(record)
-        return prediction
+            prediction = MlPrediction(
+                anomaly_score=round(float(anomaly), 4),
+                is_anomaly=is_anomaly,
+                threat_probability=round(threat, 4),
+                features={k: round(v, 4) for k, v in feature_dict.items()},
+                latency_ms=round(latency_ms, 3),
+                model_name=models["name"],
+                model_version_id=models["version_id"],
+                model_algorithm=models["algorithm"],
+                available=True,
+            )
+            observe_ml("available", latency_ms)
+
+            monitor = get_drift_monitor(models["feature_names"])
+            monitor.record_prediction(
+                feature_dict,
+                prediction.anomaly_score,
+                prediction.threat_probability,
+                prediction.is_anomaly,
+            )
+
+            record = ModelPrediction(
+                request_id=ctx.request_id,
+                model_version_id=models["version_id"],
+                model_name=models["name"],
+                model_algorithm=models["algorithm"],
+                anomaly_score=prediction.anomaly_score,
+                is_anomaly=prediction.is_anomaly,
+                threat_probability=prediction.threat_probability,
+                features=prediction.features,
+                latency_ms=prediction.latency_ms,
+            )
+            session.add(record)
+            return prediction
+        except Exception as exc:  # noqa: BLE001
+            logger.error("ml.inference_failed", error=str(exc))
+            observe_ml("error", 0.0)
+            return MlPrediction(0.0, False, 0.0, feature_dict, 0.0, available=False)
+
+    async def close(self) -> None:
+        return None

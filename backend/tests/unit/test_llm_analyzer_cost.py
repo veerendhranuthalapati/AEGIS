@@ -38,7 +38,7 @@ def _analyzer(**overrides) -> LlmAnalyzer:
     settings = Settings(
         **{
             "llm_analyzer_enabled": True,
-            "llm_provider": "openai",
+            "llm_analyzer_provider": "openai",
             "llm_model": "mock",
             "llm_api_key": "test-key",
             "llm_base_url": "http://llm.mock",

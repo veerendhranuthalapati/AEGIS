@@ -66,16 +66,26 @@ class Settings(BaseSettings):
     ml_train_synthetic_seed: int = 42
     ml_max_train_size: int = 100_000
 
-    # --- LLM security analyzer -------------------------------------------
-    llm_provider: str = "none"  # none | openai
+    # --- LLM upstream provider (mock | real) ---------------------------
+    llm_provider: str = "mock"  # mock | real
     llm_model: str = ""
     llm_api_key: str = ""
     llm_base_url: str = ""
     llm_timeout_seconds: float = 15.0
     llm_max_tokens: int = 512
-    llm_max_calls_per_minute: int = 20
+    llm_max_input_tokens: int = 4096
+    llm_max_output_tokens: int = 512
+    llm_max_response_chars: int = 50_000
+    llm_max_retries: int = 2
     llm_max_prompt_chars: int = 12_000
-    llm_analyzer_enabled: bool = False  # keep off unless an API key is present
+    llm_max_concurrent_requests: int = 10
+    llm_max_session_requests: int = 50
+    llm_max_actor_requests_per_hour: int = 120
+    llm_max_tool_call_depth: int = 3
+    # --- LLM security analyzer (optional external classifier) ----------
+    llm_analyzer_provider: str = "none"  # none | openai
+    llm_analyzer_enabled: bool = False
+    llm_max_calls_per_minute: int = 20
     llm_fallback_deterministic: bool = True
     # --- LLM cost-abuse controls (USD) -----------------------------------
     llm_price_per_1k_prompt_tokens: float = 0.03

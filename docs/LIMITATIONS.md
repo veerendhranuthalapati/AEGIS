@@ -21,7 +21,7 @@ This document states what AEGIS **does not** claim. Read this before demos, inte
 
 | Limitation | Detail |
 |------------|--------|
-| **Mock/echo upstream** | Default stack uses `mock-api` echo — no live OpenAI/Anthropic/etc. integration |
+| **Mock/echo upstream** | Default stack uses `MockProvider` — no live OpenAI/Anthropic unless `LLM_PROVIDER=real` |
 | **Heuristic scanner** | Prompt injection detection uses pattern/heuristic rules, not a separate LLM judge |
 | **No semantic understanding** | Novel jailbreak phrasing outside patterns may evade detection |
 | **Output redaction is pattern-based** | Cannot guarantee all sensitive formats are caught |

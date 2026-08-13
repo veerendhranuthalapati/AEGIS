@@ -94,7 +94,7 @@ See [ATTACK_LAB.md](../ATTACK_LAB.md).
 |-------|--------|
 | Phase 0: initial commit | **Missing** — repo had zero commits; addressed in this phase |
 | SQLi unit tests | **PASS** (decode, rules, api_bypass) |
-| Backend pytest | **PASS** (169 tests, excluding optional postgres-only when DB down) |
+| Backend pytest | **PASS** (224/225 at 2026-08-13 audit without live Postgres; 1 postgres-only test requires DB) |
 | Ruff | **PASS** |
 | Mypy `app/` | **0 errors** |
 | Bandit `-lll` | **PASS** (no HIGH in app/) |

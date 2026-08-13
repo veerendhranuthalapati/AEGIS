@@ -146,6 +146,12 @@ async def ensure_token_valid(
     session: AsyncSession, payload: dict
 ) -> User:
     """Verify the JWT is not revoked or expired and the subject exists."""
+
+    def _utc(dt: datetime) -> datetime:
+        if dt.tzinfo is None:
+            return dt.replace(tzinfo=timezone.utc)
+        return dt.astimezone(timezone.utc)
+
     jti = payload.get("jti")
     if jti:
         result = await session.execute(
@@ -154,7 +160,7 @@ async def ensure_token_valid(
         token = result.scalar_one_or_none()
         if token is None or token.revoked_at is not None:
             raise TokenError("token revoked")
-        if token.expires_at is not None and token.expires_at < datetime.now(timezone.utc):
+        if token.expires_at is not None and _utc(token.expires_at) < datetime.now(timezone.utc):
             raise TokenError("token expired")
     user_id = payload.get("sub")
     user_result = await session.execute(select(User).where(User.id == user_id))

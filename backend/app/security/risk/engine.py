@@ -25,6 +25,7 @@ class RiskInput:
     findings: list[Finding] = field(default_factory=list)
     ml_anomaly_score: float = 0.0  # 0..1
     ml_threat_probability: float = 0.0  # 0..1
+    ml_available: bool = False  # False when disabled, load failed, or inference error
     behavior: dict = field(default_factory=dict)
     data_sensitivity: float = 0.0  # 0..1
     attack_history: float = 0.0  # 0..1
@@ -106,9 +107,11 @@ def assess_risk(risk_input: RiskInput) -> RiskAssessment:
         for f in risk_input.findings:
             reasons.append(f"{f.name} ({f.severity})")
 
-    ml = _ml_score(risk_input.ml_anomaly_score, risk_input.ml_threat_probability)
-    if ml >= 0.6:
+    ml = _ml_score(risk_input.ml_anomaly_score, risk_input.ml_threat_probability) if risk_input.ml_available else 0.0
+    if risk_input.ml_available and ml >= 0.6:
         reasons.append(f"ML anomaly score {ml:.2f}")
+    elif not risk_input.ml_available and risk_input.findings:
+        pass  # deterministic signals only — do not treat ML outage as low risk
 
     behavior = _behavior_score(risk_input.behavior)
     if behavior >= 0.4:
@@ -133,9 +136,10 @@ def assess_risk(risk_input: RiskInput) -> RiskAssessment:
     if risk_input.policy_violations:
         reasons.append(f"{risk_input.policy_violations} policy violation(s)")
 
+    ml_weight = W_ML if risk_input.ml_available else 0.0
     raw = (
         W_FINDINGS * f_score
-        + W_ML * ml
+        + ml_weight * ml
         + W_BEHAVIOR * behavior
         + W_SENSITIVITY * min(1.0, risk_input.data_sensitivity)
         + W_HISTORY * min(1.0, risk_input.attack_history)
@@ -158,7 +162,8 @@ def assess_risk(risk_input: RiskInput) -> RiskAssessment:
         finding_dicts=[f.to_dict() for f in risk_input.findings],
         signal_breakdown={
             "findings": round(f_score, 3),
-            "ml": round(ml, 3),
+            "ml": round(ml, 3) if risk_input.ml_available else None,
+            "ml_available": risk_input.ml_available,
             "behavior": round(behavior, 3),
             "sensitivity": round(risk_input.data_sensitivity, 3),
             "history": round(risk_input.attack_history, 3),

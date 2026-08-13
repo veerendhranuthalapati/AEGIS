@@ -1,0 +1,154 @@
+{
+  "dataset_version": "v2-controlled-local",
+  "feature_version": "2.0",
+  "feature_names": [
+    "hour_of_day",
+    "day_of_week",
+    "log_request_size",
+    "query_param_count",
+    "path_depth",
+    "path_length",
+    "user_agent_length",
+    "is_authenticated",
+    "request_rate_per_min",
+    "unique_endpoints_1h",
+    "auth_failures_5min",
+    "body_has_sensitive",
+    "body_entropy",
+    "prompt_length",
+    "tool_call_count",
+    "new_device",
+    "account_age_days",
+    "endpoint_rarity",
+    "payload_max_token_like",
+    "is_llm_route",
+    "method_is_write",
+    "requests_last_5min"
+  ],
+  "n_total": 4200,
+  "n_train": 2520,
+  "n_val": 840,
+  "n_test": 840,
+  "n_test_unseen_actors": 160,
+  "attack_ratio": 0.23809523809523808,
+  "split_methodology": "temporal 60/20/20 + unseen-actor holdout on test tail",
+  "evaluation_type": "Controlled synthetic/local telemetry evaluation",
+  "rule_baseline": {
+    "validation": {
+      "precision": 0.1926605504587156,
+      "recall": 0.91875,
+      "f1": 0.31852654387865653,
+      "accuracy": 0.2511904761904762,
+      "false_positive_rate": 0.9058823529411765,
+      "false_negative_rate": 0.08125,
+      "confusion_matrix": {
+        "tp": 147,
+        "fp": 616,
+        "tn": 64,
+        "fn": 13
+      },
+      "roc_auc": 0.7194393382352942,
+      "pr_auc": 0.6825812330361436
+    },
+    "test": {
+      "precision": 0.29419354838709677,
+      "recall": 0.95,
+      "f1": 0.4492610837438424,
+      "accuracy": 0.3345238095238095,
+      "false_positive_rate": 0.9116666666666666,
+      "false_negative_rate": 0.05,
+      "confusion_matrix": {
+        "tp": 228,
+        "fp": 547,
+        "tn": 53,
+        "fn": 12
+      },
+      "roc_auc": 0.7932013888888889,
+      "pr_auc": 0.8030974045875667
+    }
+  },
+  "isolation_forest": {
+    "test": {
+      "precision": 0.2857142857142857,
+      "recall": 1.0,
+      "f1": 0.4444444444444444,
+      "accuracy": 0.2857142857142857,
+      "false_positive_rate": 1.0,
+      "false_negative_rate": 0.0,
+      "confusion_matrix": {
+        "tp": 240,
+        "fp": 600,
+        "tn": 0,
+        "fn": 0
+      },
+      "roc_auc": 0.6028888888888889,
+      "pr_auc": 0.3226207121680836
+    },
+    "train_latency_ms": 385.82,
+    "inference_latency_ms_per_sample": 0.1568
+  },
+  "random_forest": {
+    "test": {
+      "precision": 0.9916666666666667,
+      "recall": 0.49583333333333335,
+      "f1": 0.6611111111111111,
+      "accuracy": 0.8547619047619047,
+      "false_positive_rate": 0.0016666666666666668,
+      "false_negative_rate": 0.5041666666666667,
+      "confusion_matrix": {
+        "tp": 119,
+        "fp": 1,
+        "tn": 599,
+        "fn": 121
+      },
+      "roc_auc": 0.7703402777777777,
+      "pr_auc": 0.7186010903440183
+    },
+    "unseen_actors_test": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1": 0.0,
+      "accuracy": 1.0,
+      "false_positive_rate": 0.0,
+      "false_negative_rate": 0.0,
+      "confusion_matrix": {
+        "tp": 0,
+        "fp": 0,
+        "tn": 160,
+        "fn": 0
+      },
+      "roc_auc": NaN,
+      "pr_auc": 0.0
+    },
+    "train_latency_ms": 377.25,
+    "inference_latency_ms_per_sample": 0.4284
+  },
+  "gradient_boosting": {
+    "note": "sklearn GradientBoostingClassifier (XGBoost not installed)",
+    "test": {
+      "precision": 0.8648648648648649,
+      "recall": 0.5333333333333333,
+      "f1": 0.6597938144329897,
+      "accuracy": 0.8428571428571429,
+      "false_positive_rate": 0.03333333333333333,
+      "false_negative_rate": 0.4666666666666667,
+      "confusion_matrix": {
+        "tp": 128,
+        "fp": 20,
+        "tn": 580,
+        "fn": 112
+      },
+      "roc_auc": 0.7342708333333333,
+      "pr_auc": 0.7048335382006241
+    },
+    "train_latency_ms": 1313.19
+  },
+  "hard_negative_false_positive_rate_rf": 0.0,
+  "hard_negative_count_test": 200,
+  "limitations": [
+    "Controlled synthetic/local telemetry \u2014 not production traffic",
+    "Labels derived from scenario type, not ground-truth SOC adjudication",
+    "V2 features include is_llm_route/method_is_write not in V1 online model",
+    "GradientBoosting used instead of XGBoost (not in requirements)"
+  ]
+}

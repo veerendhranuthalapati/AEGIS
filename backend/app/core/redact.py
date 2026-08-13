@@ -159,3 +159,14 @@ def sensitivity_score(text: str) -> float:
         return 0.0
     covered = sum(d.end - d.start for d in detections)
     return min(1.0, covered / max(1, len(text)) + 0.4 * len(detections))
+
+
+def sanitize_known_secrets(text: str, *secrets: str) -> str:
+    """Remove known secret values from log-safe strings."""
+    if not text:
+        return text
+    out = text
+    for secret in secrets:
+        if secret and len(secret) >= 8:
+            out = out.replace(secret, "[SECRET REDACTED]")
+    return out

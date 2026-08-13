@@ -32,6 +32,7 @@ def test_multiple_signals_reach_critical():
             findings=[_finding("API-006", "HIGH", 0.7), _finding("API-007", "HIGH", 0.7)],
             ml_anomaly_score=0.9,
             ml_threat_probability=0.8,
+            ml_available=True,
             behavior={"request_rate_ratio": 25.0, "auth_failures_5min": 20},
             data_sensitivity=0.8,
         )

@@ -1,0 +1,1233 @@
+{
+ "blocked_legit_llm": {
+  "status": 200,
+  "decision": null,
+  "body_snip": "{'choices': [{'message': {'role': 'assistant', 'content': \"Echo: Summarize today's news.\"}, 'finish_reason': 'stop'}], 'model': 'mock-llm', 'provider': 'mock', "
+ },
+ "legit_api_read": {
+  "status": 200,
+  "decision": null,
+  "body_snip": "{'id': 2, 'name': 'Bob Baker', 'email': '[EMAIL REDACTED]', 'ssn': '[SSN REDACTED]', 'api_key': '[API KEY REDACTED]'}"
+ },
+ "legit_health": {
+  "status": 200,
+  "decision": null,
+  "body_snip": "{'status': 'ok'}"
+ },
+ "bola": {
+  "status": 403,
+  "decision": "BLOCK",
+  "body_snip": "{'request_id': 'req_e39938e875d04c54a9129525', 'decision': 'BLOCK', 'risk_score': 39.8, 'risk_level': 'MEDIUM', 'reasons': ['BOLA/IDOR access attempt (HIGH)'], "
+ },
+ "admin_probe": {
+  "status": 403,
+  "decision": "BLOCK",
+  "body_snip": "{'request_id': 'req_023110185f9e490bad9ef6d1', 'decision': 'BLOCK', 'risk_score': 31.7, 'risk_level': 'MEDIUM', 'reasons': ['Admin endpoint probing (HIGH)'], 'f"
+ },
+ "sql_injection": {
+  "status": 403,
+  "decision": "BLOCK",
+  "body_snip": "{'request_id': 'req_75df2c9edd6042498ffce7f3', 'decision': 'BLOCK', 'risk_score': 31.7, 'risk_level': 'MEDIUM', 'reasons': ['SQL injection indicators (HIGH)'], "
+ },
+ "path_traversal": {
+  "status": 403,
+  "decision": "BLOCK",
+  "body_snip": "{'request_id': 'req_d1ff02b4e37d49939d25ddbd', 'decision': 'BLOCK', 'risk_score': 31.7, 'risk_level': 'MEDIUM', 'reasons': ['Path traversal indicators (HIGH)'],"
+ },
+ "ssrf": {
+  "status": 403,
+  "decision": "BLOCK",
+  "body_snip": "{'request_id': 'req_6fc9a6ec42f84a25a2274552', 'decision': 'BLOCK', 'risk_score': 36.7, 'risk_level': 'MEDIUM', 'reasons': ['SSRF indicators (HIGH)', 'History o"
+ },
+ "cmd_injection": {
+  "status": 403,
+  "decision": "BLOCK",
+  "body_snip": "{'request_id': 'req_4e406725f93242afbf416984', 'decision': 'BLOCK', 'risk_score': 36.7, 'risk_level': 'MEDIUM', 'reasons': ['Command injection indicators (HIGH)"
+ },
+ "prompt_injection": {
+  "status": 202,
+  "decision": "REQUIRE_REVIEW",
+  "body_snip": "{'request_id': 'req_15399c9f5d294ecab21c888b', 'decision': 'REQUIRE_REVIEW', 'risk_score': 46.5, 'risk_level': 'MEDIUM', 'reasons': ['Direct prompt injection (H"
+ },
+ "jailbreak": {
+  "status": 202,
+  "decision": "REQUIRE_REVIEW",
+  "body_snip": "{'request_id': 'req_a3b7e2c5b6024505a934a7a4', 'decision': 'REQUIRE_REVIEW', 'risk_score': 46.5, 'risk_level': 'MEDIUM', 'reasons': ['Direct prompt injection (H"
+ },
+ "sensitive_extract": {
+  "status": 202,
+  "decision": "REQUIRE_REVIEW",
+  "body_snip": "{'request_id': 'req_c7c524c396e64c7282802036', 'decision': 'REQUIRE_REVIEW', 'risk_score': 36.7, 'risk_level': 'MEDIUM', 'reasons': ['Sensitive information extr"
+ },
+ "tool_delete": {
+  "status": 403,
+  "decision": "BLOCK",
+  "body_snip": "{'decision': 'BLOCK', 'risk_score': 0.9, 'reasons': [\"Role 'user' is not allowed to invoke 'delete_user'\"], 'approval_id': None, 'result': None, 'requires_appro"
+ },
+ "large_payment": {
+  "status": 403,
+  "decision": "BLOCK",
+  "body_snip": "{'decision': 'BLOCK', 'risk_score': 0.9, 'reasons': [\"Role 'user' is not allowed to invoke 'execute_payment'\"], 'approval_id': None, 'result': None, 'requires_a"
+ },
+ "missing_auth": {
+  "status": 401,
+  "decision": "BLOCK",
+  "body_snip": "{'request_id': 'req_70884db67aa7408fb71290b6', 'decision': 'BLOCK', 'reason': 'Authentication required to transit the gateway', 'error': 'unauthenticated'}"
+ },
+ "_events_status": 200,
+ "_events": [
+  {
+   "id": "96c1f327-c780-41ef-8344-5f15c0f00a9e",
+   "event_id": "evt_36449d2cba8749b3bf22194e",
+   "timestamp": "2026-08-13T10:20:49.728739Z",
+   "event_type": "TOOL_BLOCKED",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/api/agents/tools/invoke",
+   "risk_score": 0.9,
+   "decision": "BLOCK",
+   "reasons": [
+    "Role 'user' is not allowed to invoke 'execute_payment'"
+   ],
+   "details": {
+    "tool": "execute_payment"
+   },
+   "detection_source": "agents",
+   "mitre_techniques": [
+    "T1078"
+   ],
+   "incident_id": null
+  },
+  {
+   "id": "fbefcd57-4851-41fa-86e2-e664658d1e1f",
+   "event_id": "evt_54a87058b7fb463a9256f0da",
+   "timestamp": "2026-08-13T10:20:49.689510Z",
+   "event_type": "TOOL_BLOCKED",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/api/agents/tools/invoke",
+   "risk_score": 0.9,
+   "decision": "BLOCK",
+   "reasons": [
+    "Role 'user' is not allowed to invoke 'delete_user'"
+   ],
+   "details": {
+    "tool": "delete_user"
+   },
+   "detection_source": "agents",
+   "mitre_techniques": [
+    "T1078"
+   ],
+   "incident_id": null
+  },
+  {
+   "id": "da82039a-2d88-478b-8c74-86839c275713",
+   "event_id": "evt_e9dd46d72d5940b0b2a55d62",
+   "timestamp": "2026-08-13T10:20:49.652574Z",
+   "event_type": "SENSITIVE_EXTRACTION",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/ai/chat",
+   "risk_score": 36.7,
+   "decision": "REQUIRE_REVIEW",
+   "reasons": [
+    "Prompt requests sensitive data"
+   ],
+   "details": {
+    "category": "sensitive_extraction"
+   },
+   "detection_source": "llm",
+   "mitre_techniques": [
+    "T1005"
+   ],
+   "incident_id": "82aa82c5-7a06-4c24-9915-89785b8c8e95"
+  },
+  {
+   "id": "7afb4877-0662-4512-bf0b-c67fe901b512",
+   "event_id": "evt_1a9d7d8aeba842519e3b36aa",
+   "timestamp": "2026-08-13T10:20:49.599078Z",
+   "event_type": "JAILBREAK_ATTEMPT",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/ai/chat",
+   "risk_score": 46.5,
+   "decision": "REQUIRE_REVIEW",
+   "reasons": [
+    "Prompt uses known jailbreak/roleplay framing"
+   ],
+   "details": {
+    "category": "jailbreak"
+   },
+   "detection_source": "llm",
+   "mitre_techniques": [
+    "AML.T0051"
+   ],
+   "incident_id": "82aa82c5-7a06-4c24-9915-89785b8c8e95"
+  },
+  {
+   "id": "d10117a5-36fa-42dd-b805-59c4bc062e0c",
+   "event_id": "evt_4543697948314d52b5c7d24c",
+   "timestamp": "2026-08-13T10:20:49.597093Z",
+   "event_type": "PROMPT_INJECTION",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/ai/chat",
+   "risk_score": 46.5,
+   "decision": "REQUIRE_REVIEW",
+   "reasons": [
+    "Prompt contains instruction-override phrases"
+   ],
+   "details": {
+    "category": "direct_prompt_injection"
+   },
+   "detection_source": "llm",
+   "mitre_techniques": [
+    "AML.T0051"
+   ],
+   "incident_id": "82aa82c5-7a06-4c24-9915-89785b8c8e95"
+  },
+  {
+   "id": "2e3fa32c-a80e-4eec-b1f0-815d20b0d337",
+   "event_id": "evt_4695aaa953cd407ea20256ea",
+   "timestamp": "2026-08-13T10:20:49.547197Z",
+   "event_type": "SYSTEM_PROMPT_EXTRACTION",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/ai/chat",
+   "risk_score": 46.5,
+   "decision": "REQUIRE_REVIEW",
+   "reasons": [
+    "Prompt attempts to extract the system prompt"
+   ],
+   "details": {
+    "category": "system_prompt_extraction"
+   },
+   "detection_source": "llm",
+   "mitre_techniques": [
+    "AML.T0051"
+   ],
+   "incident_id": "82aa82c5-7a06-4c24-9915-89785b8c8e95"
+  },
+  {
+   "id": "ec5e4094-ee21-4065-9243-51a4fcee1164",
+   "event_id": "evt_d93e23d4df154ca1b9fe2217",
+   "timestamp": "2026-08-13T10:20:49.545445Z",
+   "event_type": "PROMPT_INJECTION",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/ai/chat",
+   "risk_score": 46.5,
+   "decision": "REQUIRE_REVIEW",
+   "reasons": [
+    "Prompt contains instruction-override phrases"
+   ],
+   "details": {
+    "category": "direct_prompt_injection"
+   },
+   "detection_source": "llm",
+   "mitre_techniques": [
+    "AML.T0051"
+   ],
+   "incident_id": "82aa82c5-7a06-4c24-9915-89785b8c8e95"
+  },
+  {
+   "id": "e2f2e1d8-9abb-42be-a8e0-be56b57a2eef",
+   "event_id": "evt_d8f91d7255cc40f6b10b00c0",
+   "timestamp": "2026-08-13T10:20:49.491744Z",
+   "event_type": "POLICY_BLOCK",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/search",
+   "risk_score": 36.7,
+   "decision": "BLOCK",
+   "reasons": [
+    "Command injection indicators (HIGH)",
+    "History of related attacks on this subject"
+   ],
+   "details": null,
+   "detection_source": "policy",
+   "mitre_techniques": [
+    "T1499"
+   ],
+   "incident_id": null
+  },
+  {
+   "id": "5beab5d6-9be9-46a4-8368-576096c11054",
+   "event_id": "evt_e7fd6d60eaa541afaf320cfe",
+   "timestamp": "2026-08-13T10:20:49.489456Z",
+   "event_type": "CMD_INJ_INDICATOR",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/search",
+   "risk_score": 36.7,
+   "decision": "BLOCK",
+   "reasons": [
+    "Command injection pattern matched: (^|[;&|])\\s*(id|whoami|pwd)\\b"
+   ],
+   "details": null,
+   "detection_source": "rules",
+   "mitre_techniques": [
+    "T1059"
+   ],
+   "incident_id": null
+  },
+  {
+   "id": "b8c62cee-d685-4561-bfd0-548efb673483",
+   "event_id": "evt_812930a2762049da8be92880",
+   "timestamp": "2026-08-13T10:20:49.438746Z",
+   "event_type": "POLICY_BLOCK",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/search",
+   "risk_score": 36.7,
+   "decision": "BLOCK",
+   "reasons": [
+    "SSRF indicators (HIGH)",
+    "History of related attacks on this subject"
+   ],
+   "details": null,
+   "detection_source": "policy",
+   "mitre_techniques": [
+    "T1499"
+   ],
+   "incident_id": null
+  },
+  {
+   "id": "e8cb9ccd-1e51-4400-b4d7-ebede4a489f5",
+   "event_id": "evt_bd04c93f272345ce8b0bd614",
+   "timestamp": "2026-08-13T10:20:49.437067Z",
+   "event_type": "SSRF_INDICATOR",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/search",
+   "risk_score": 36.7,
+   "decision": "BLOCK",
+   "reasons": [
+    "SSRF target detected: 169.254.169.254"
+   ],
+   "details": {
+    "matches": [
+     "169.254.169.254"
+    ]
+   },
+   "detection_source": "rules",
+   "mitre_techniques": [
+    "T1190"
+   ],
+   "incident_id": null
+  },
+  {
+   "id": "607901f6-a9a2-4c3d-b0df-45695a6b94d9",
+   "event_id": "evt_bcc5c8a15c944b0c83ef3106",
+   "timestamp": "2026-08-13T10:20:49.383689Z",
+   "event_type": "POLICY_BLOCK",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/search",
+   "risk_score": 31.7,
+   "decision": "BLOCK",
+   "reasons": [
+    "Path traversal indicators (HIGH)"
+   ],
+   "details": null,
+   "detection_source": "policy",
+   "mitre_techniques": [
+    "T1499"
+   ],
+   "incident_id": null
+  },
+  {
+   "id": "5bc90765-1124-417f-bb7b-5a501245ed03",
+   "event_id": "evt_f59a0bf31bcb4c13bd0f83b8",
+   "timestamp": "2026-08-13T10:20:49.381942Z",
+   "event_type": "PATH_TRAVERSAL",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/search",
+   "risk_score": 31.7,
+   "decision": "BLOCK",
+   "reasons": [
+    "Path traversal sequences detected (../ or encodings)"
+   ],
+   "details": null,
+   "detection_source": "rules",
+   "mitre_techniques": [
+    "T1190"
+   ],
+   "incident_id": "4c2422e2-1ec6-4fbe-8f96-96c5323c6b7b"
+  },
+  {
+   "id": "a6c9a3c7-451c-4bbd-b1a8-0350fda75d14",
+   "event_id": "evt_d81777bad6634c03bd36ea09",
+   "timestamp": "2026-08-13T10:20:49.329476Z",
+   "event_type": "POLICY_BLOCK",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/search",
+   "risk_score": 31.7,
+   "decision": "BLOCK",
+   "reasons": [
+    "SQL injection indicators (HIGH)"
+   ],
+   "details": null,
+   "detection_source": "policy",
+   "mitre_techniques": [
+    "T1499"
+   ],
+   "incident_id": null
+  },
+  {
+   "id": "4c9c1f1e-5fb6-404d-aba7-d68b9a1b7591",
+   "event_id": "evt_c3a9b1e21def40efad01d7ee",
+   "timestamp": "2026-08-13T10:20:49.327519Z",
+   "event_type": "SQLI_INDICATOR",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/search",
+   "risk_score": 31.7,
+   "decision": "BLOCK",
+   "reasons": [
+    "SQL injection pattern matched: \\bor\\s+['\\\"]?\\s*1\\s*=\\s*1\\b"
+   ],
+   "details": null,
+   "detection_source": "rules",
+   "mitre_techniques": [
+    "T1190"
+   ],
+   "incident_id": "4c2422e2-1ec6-4fbe-8f96-96c5323c6b7b"
+  },
+  {
+   "id": "53c6dd11-e317-458d-b137-e6db60dc81aa",
+   "event_id": "evt_04ed927d6a0a4e34b584fd6b",
+   "timestamp": "2026-08-13T10:20:49.251570Z",
+   "event_type": "POLICY_BLOCK",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/admin/users",
+   "risk_score": 31.7,
+   "decision": "BLOCK",
+   "reasons": [
+    "Admin endpoint probing (HIGH)"
+   ],
+   "details": null,
+   "detection_source": "policy",
+   "mitre_techniques": [
+    "T1499"
+   ],
+   "incident_id": null
+  },
+  {
+   "id": "7bdb2811-97b9-44aa-a0ce-e44ede42efd2",
+   "event_id": "evt_be59483db35c48afb093cb9a",
+   "timestamp": "2026-08-13T10:20:49.248951Z",
+   "event_type": "DETECTION",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/admin/users",
+   "risk_score": 31.7,
+   "decision": "BLOCK",
+   "reasons": [
+    "Non-privileged subject accessed admin path"
+   ],
+   "details": {
+    "path": "/admin/users"
+   },
+   "detection_source": "rules",
+   "mitre_techniques": [
+    "T1078",
+    "T1083"
+   ],
+   "incident_id": null
+  },
+  {
+   "id": "8f5d8be6-69e1-4678-84a3-e4fe11be41fe",
+   "event_id": "evt_26961d6247be45f6afa5a02e",
+   "timestamp": "2026-08-13T10:20:49.160762Z",
+   "event_type": "POLICY_BLOCK",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/api/users/:id",
+   "risk_score": 39.8,
+   "decision": "BLOCK",
+   "reasons": [
+    "BOLA/IDOR access attempt (HIGH)"
+   ],
+   "details": null,
+   "detection_source": "policy",
+   "mitre_techniques": [
+    "T1499"
+   ],
+   "incident_id": null
+  },
+  {
+   "id": "dbcee76d-f655-4e8f-8c44-d52f1f4a8858",
+   "event_id": "evt_4e1ad343d9ac4062b7860299",
+   "timestamp": "2026-08-13T10:20:49.157678Z",
+   "event_type": "BOLA_ATTEMPT",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/api/users/:id",
+   "risk_score": 39.8,
+   "decision": "BLOCK",
+   "reasons": [
+    "Subject 5e442389-2910-4ba5-b9c2-dc891f438c0b accessed resource /api/users/2 owned by another subject"
+   ],
+   "details": {
+    "resource": "/api/users",
+    "resource_id": "2"
+   },
+   "detection_source": "rules",
+   "mitre_techniques": [
+    "T1078",
+    "T1083"
+   ],
+   "incident_id": "6edb2adf-b0c2-4f03-8fda-7e047bc04e22"
+  },
+  {
+   "id": "f94c0933-3388-4513-9d49-161edf010b78",
+   "event_id": "evt_73a2ba6ff3d84dfe978d0b47",
+   "timestamp": "2026-08-13T10:20:48.995659Z",
+   "event_type": "SENSITIVE_OUTPUT",
+   "severity": "HIGH",
+   "actor_id": "189464bc-997c-4d96-b2c8-507306db96ff",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/api/users/:id",
+   "risk_score": 3.8,
+   "decision": "REDACT",
+   "reasons": [
+    "Sensitive data detected in upstream response and redacted"
+   ],
+   "details": null,
+   "detection_source": "pii",
+   "mitre_techniques": [
+    "T1041"
+   ],
+   "incident_id": "6edb2adf-b0c2-4f03-8fda-7e047bc04e22"
+  }
+ ],
+ "_incidents": [
+  {
+   "id": "82aa82c5-7a06-4c24-9915-89785b8c8e95",
+   "incident_number": 3,
+   "title": "LLM prompt-injection campaign (5e442389-2910-4ba5-b9c2-dc891f438c0b)",
+   "description": "Correlated 4 signal types (JAILBREAK_ATTEMPT, PROMPT_INJECTION, SENSITIVE_EXTRACTION, SYSTEM_PROMPT_EXTRACTION) from subject 5e442389-2910-4ba5-b9c2-dc891f438c0b within the correlation window.",
+   "severity": "HIGH",
+   "status": "OPEN",
+   "confidence": 57.5,
+   "attack_type": "LLM prompt-injection campaign",
+   "attacker_key": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "timeline": [
+    {
+     "time": "2026-08-13T10:20:49.545445+00:00",
+     "event_type": "PROMPT_INJECTION",
+     "event_id": "evt_d93e23d4df154ca1b9fe2217",
+     "endpoint": "/ai/chat"
+    },
+    {
+     "time": "2026-08-13T10:20:49.547197+00:00",
+     "event_type": "SYSTEM_PROMPT_EXTRACTION",
+     "event_id": "evt_4695aaa953cd407ea20256ea",
+     "endpoint": "/ai/chat"
+    },
+    {
+     "time": "2026-08-13T10:20:49.597093+00:00",
+     "event_type": "PROMPT_INJECTION",
+     "event_id": "evt_4543697948314d52b5c7d24c",
+     "endpoint": "/ai/chat"
+    },
+    {
+     "time": "2026-08-13T10:20:49.599078+00:00",
+     "event_type": "JAILBREAK_ATTEMPT",
+     "event_id": "evt_1a9d7d8aeba842519e3b36aa",
+     "endpoint": "/ai/chat"
+    },
+    {
+     "time": "2026-08-13T10:20:49.652574+00:00",
+     "event_type": "SENSITIVE_EXTRACTION",
+     "event_id": "evt_e9dd46d72d5940b0b2a55d62",
+     "endpoint": "/ai/chat"
+    }
+   ],
+   "mitre_techniques": [
+    "AML.T0051",
+    "T1005",
+    "T1027",
+    "T1213"
+   ],
+   "related_event_ids": [
+    "evt_d93e23d4df154ca1b9fe2217",
+    "evt_4695aaa953cd407ea20256ea",
+    "evt_4543697948314d52b5c7d24c",
+    "evt_1a9d7d8aeba842519e3b36aa",
+    "evt_e9dd46d72d5940b0b2a55d62"
+   ],
+   "first_seen": "2026-08-13T10:20:49.984781Z",
+   "last_seen": "2026-08-13T10:20:49.995603Z"
+  },
+  {
+   "id": "4c2422e2-1ec6-4fbe-8f96-96c5323c6b7b",
+   "incident_number": 1,
+   "title": "Application-layer injection attack (5e442389-2910-4ba5-b9c2-dc891f438c0b)",
+   "description": "Correlated 2 signal types (PATH_TRAVERSAL, SQLI_INDICATOR) from subject 5e442389-2910-4ba5-b9c2-dc891f438c0b within the correlation window.",
+   "severity": "HIGH",
+   "status": "OPEN",
+   "confidence": 37.5,
+   "attack_type": "Application-layer injection attack",
+   "attacker_key": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "timeline": [
+    {
+     "time": "2026-08-13T10:20:49.327519+00:00",
+     "event_type": "SQLI_INDICATOR",
+     "event_id": "evt_c3a9b1e21def40efad01d7ee",
+     "endpoint": "/search"
+    },
+    {
+     "time": "2026-08-13T10:20:49.381942+00:00",
+     "event_type": "PATH_TRAVERSAL",
+     "event_id": "evt_f59a0bf31bcb4c13bd0f83b8",
+     "endpoint": "/search"
+    }
+   ],
+   "mitre_techniques": [
+    "T1190",
+    "T1059"
+   ],
+   "related_event_ids": [
+    "evt_c3a9b1e21def40efad01d7ee",
+    "evt_f59a0bf31bcb4c13bd0f83b8"
+   ],
+   "first_seen": "2026-08-13T10:20:49.396665Z",
+   "last_seen": "2026-08-13T10:20:49.399484Z"
+  },
+  {
+   "id": "6edb2adf-b0c2-4f03-8fda-7e047bc04e22",
+   "incident_number": 2,
+   "title": "Data exfiltration (5e442389-2910-4ba5-b9c2-dc891f438c0b)",
+   "description": "Correlated 2 signal types (BOLA_ATTEMPT, SENSITIVE_OUTPUT) from subject 5e442389-2910-4ba5-b9c2-dc891f438c0b within the correlation window.",
+   "severity": "HIGH",
+   "status": "OPEN",
+   "confidence": 40.0,
+   "attack_type": "Data exfiltration",
+   "attacker_key": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "timeline": [
+    {
+     "time": "2026-08-13T10:20:48.995659+00:00",
+     "event_type": "SENSITIVE_OUTPUT",
+     "event_id": "evt_73a2ba6ff3d84dfe978d0b47",
+     "endpoint": "/api/users/:id"
+    },
+    {
+     "time": "2026-08-13T10:20:49.157678+00:00",
+     "event_type": "BOLA_ATTEMPT",
+     "event_id": "evt_4e1ad343d9ac4062b7860299",
+     "endpoint": "/api/users/:id"
+    }
+   ],
+   "mitre_techniques": [
+    "T1041",
+    "T1078",
+    "T1083",
+    "T1005"
+   ],
+   "related_event_ids": [
+    "evt_73a2ba6ff3d84dfe978d0b47",
+    "evt_4e1ad343d9ac4062b7860299"
+   ],
+   "first_seen": "2026-08-13T10:20:49.396665Z",
+   "last_seen": "2026-08-13T10:20:49.404491Z"
+  }
+ ],
+ "_overview": {
+  "total_requests": 12,
+  "blocked_requests": 6,
+  "active_incidents": 3,
+  "open_approvals": 0,
+  "current_risk": 29.1,
+  "requests_24h": [
+   {
+    "hour": "2026-08-13T10:00:00+00:00",
+    "count": 12
+   }
+  ],
+  "top_attacking_ips": [
+   {
+    "ip": "127.0.0.1",
+    "requests": 12,
+    "threats": 3
+   }
+  ],
+  "top_risk_users": [
+   {
+    "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+    "avg_risk": 37.6,
+    "requests": 9
+   },
+   {
+    "actor_id": "189464bc-997c-4d96-b2c8-507306db96ff",
+    "avg_risk": 3.8,
+    "requests": 3
+   }
+  ],
+  "attack_types": [
+   {
+    "attack_type": "Data exfiltration",
+    "count": 1
+   },
+   {
+    "attack_type": "LLM prompt-injection campaign",
+    "count": 1
+   },
+   {
+    "attack_type": "Application-layer injection attack",
+    "count": 1
+   }
+  ],
+  "event_counts_by_type": [
+   {
+    "event_type": "POLICY_BLOCK",
+    "count": 6
+   },
+   {
+    "event_type": "PROMPT_INJECTION",
+    "count": 2
+   },
+   {
+    "event_type": "TOOL_BLOCKED",
+    "count": 2
+   },
+   {
+    "event_type": "SENSITIVE_OUTPUT",
+    "count": 1
+   },
+   {
+    "event_type": "CMD_INJ_INDICATOR",
+    "count": 1
+   },
+   {
+    "event_type": "SENSITIVE_EXTRACTION",
+    "count": 1
+   },
+   {
+    "event_type": "DETECTION",
+    "count": 1
+   },
+   {
+    "event_type": "SSRF_INDICATOR",
+    "count": 1
+   },
+   {
+    "event_type": "SYSTEM_PROMPT_EXTRACTION",
+    "count": 1
+   },
+   {
+    "event_type": "PATH_TRAVERSAL",
+    "count": 1
+   },
+   {
+    "event_type": "BOLA_ATTEMPT",
+    "count": 1
+   },
+   {
+    "event_type": "JAILBREAK_ATTEMPT",
+    "count": 1
+   },
+   {
+    "event_type": "SQLI_INDICATOR",
+    "count": 1
+   }
+  ],
+  "decisions_today": [
+   {
+    "decision": "BLOCK",
+    "count": 6
+   },
+   {
+    "decision": "ALLOW",
+    "count": 3
+   },
+   {
+    "decision": "REQUIRE_REVIEW",
+    "count": 3
+   }
+  ]
+ },
+ "_event_summary": [
+  {
+   "event_type": "PROMPT_INJECTION",
+   "count": 2,
+   "max_risk": 46.5
+  },
+  {
+   "event_type": "DETECTION",
+   "count": 1,
+   "max_risk": 31.7
+  },
+  {
+   "event_type": "SQLI_INDICATOR",
+   "count": 1,
+   "max_risk": 31.7
+  },
+  {
+   "event_type": "SENSITIVE_OUTPUT",
+   "count": 1,
+   "max_risk": 3.8
+  },
+  {
+   "event_type": "CMD_INJ_INDICATOR",
+   "count": 1,
+   "max_risk": 36.7
+  },
+  {
+   "event_type": "SENSITIVE_EXTRACTION",
+   "count": 1,
+   "max_risk": 36.7
+  },
+  {
+   "event_type": "POLICY_BLOCK",
+   "count": 6,
+   "max_risk": 39.8
+  },
+  {
+   "event_type": "SSRF_INDICATOR",
+   "count": 1,
+   "max_risk": 36.7
+  },
+  {
+   "event_type": "SYSTEM_PROMPT_EXTRACTION",
+   "count": 1,
+   "max_risk": 46.5
+  },
+  {
+   "event_type": "TOOL_BLOCKED",
+   "count": 2,
+   "max_risk": 0.9
+  },
+  {
+   "event_type": "BOLA_ATTEMPT",
+   "count": 1,
+   "max_risk": 39.8
+  },
+  {
+   "event_type": "JAILBREAK_ATTEMPT",
+   "count": 1,
+   "max_risk": 46.5
+  },
+  {
+   "event_type": "PATH_TRAVERSAL",
+   "count": 1,
+   "max_risk": 31.7
+  }
+ ],
+ "_threats_live": [
+  {
+   "event_id": "evt_36449d2cba8749b3bf22194e",
+   "timestamp": "2026-08-13T10:20:49.728739+00:00",
+   "event_type": "TOOL_BLOCKED",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/api/agents/tools/invoke",
+   "risk_score": 0.9,
+   "decision": "BLOCK",
+   "reasons": [
+    "Role 'user' is not allowed to invoke 'execute_payment'"
+   ],
+   "mitre_techniques": [
+    "T1078"
+   ],
+   "incident_id": null
+  },
+  {
+   "event_id": "evt_54a87058b7fb463a9256f0da",
+   "timestamp": "2026-08-13T10:20:49.689510+00:00",
+   "event_type": "TOOL_BLOCKED",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/api/agents/tools/invoke",
+   "risk_score": 0.9,
+   "decision": "BLOCK",
+   "reasons": [
+    "Role 'user' is not allowed to invoke 'delete_user'"
+   ],
+   "mitre_techniques": [
+    "T1078"
+   ],
+   "incident_id": null
+  },
+  {
+   "event_id": "evt_e9dd46d72d5940b0b2a55d62",
+   "timestamp": "2026-08-13T10:20:49.652574+00:00",
+   "event_type": "SENSITIVE_EXTRACTION",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/ai/chat",
+   "risk_score": 36.7,
+   "decision": "REQUIRE_REVIEW",
+   "reasons": [
+    "Prompt requests sensitive data"
+   ],
+   "mitre_techniques": [
+    "T1005"
+   ],
+   "incident_id": "82aa82c5-7a06-4c24-9915-89785b8c8e95"
+  },
+  {
+   "event_id": "evt_1a9d7d8aeba842519e3b36aa",
+   "timestamp": "2026-08-13T10:20:49.599078+00:00",
+   "event_type": "JAILBREAK_ATTEMPT",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/ai/chat",
+   "risk_score": 46.5,
+   "decision": "REQUIRE_REVIEW",
+   "reasons": [
+    "Prompt uses known jailbreak/roleplay framing"
+   ],
+   "mitre_techniques": [
+    "AML.T0051"
+   ],
+   "incident_id": "82aa82c5-7a06-4c24-9915-89785b8c8e95"
+  },
+  {
+   "event_id": "evt_4543697948314d52b5c7d24c",
+   "timestamp": "2026-08-13T10:20:49.597093+00:00",
+   "event_type": "PROMPT_INJECTION",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/ai/chat",
+   "risk_score": 46.5,
+   "decision": "REQUIRE_REVIEW",
+   "reasons": [
+    "Prompt contains instruction-override phrases"
+   ],
+   "mitre_techniques": [
+    "AML.T0051"
+   ],
+   "incident_id": "82aa82c5-7a06-4c24-9915-89785b8c8e95"
+  },
+  {
+   "event_id": "evt_4695aaa953cd407ea20256ea",
+   "timestamp": "2026-08-13T10:20:49.547197+00:00",
+   "event_type": "SYSTEM_PROMPT_EXTRACTION",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/ai/chat",
+   "risk_score": 46.5,
+   "decision": "REQUIRE_REVIEW",
+   "reasons": [
+    "Prompt attempts to extract the system prompt"
+   ],
+   "mitre_techniques": [
+    "AML.T0051"
+   ],
+   "incident_id": "82aa82c5-7a06-4c24-9915-89785b8c8e95"
+  },
+  {
+   "event_id": "evt_d93e23d4df154ca1b9fe2217",
+   "timestamp": "2026-08-13T10:20:49.545445+00:00",
+   "event_type": "PROMPT_INJECTION",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/ai/chat",
+   "risk_score": 46.5,
+   "decision": "REQUIRE_REVIEW",
+   "reasons": [
+    "Prompt contains instruction-override phrases"
+   ],
+   "mitre_techniques": [
+    "AML.T0051"
+   ],
+   "incident_id": "82aa82c5-7a06-4c24-9915-89785b8c8e95"
+  },
+  {
+   "event_id": "evt_d8f91d7255cc40f6b10b00c0",
+   "timestamp": "2026-08-13T10:20:49.491744+00:00",
+   "event_type": "POLICY_BLOCK",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/search",
+   "risk_score": 36.7,
+   "decision": "BLOCK",
+   "reasons": [
+    "Command injection indicators (HIGH)",
+    "History of related attacks on this subject"
+   ],
+   "mitre_techniques": [
+    "T1499"
+   ],
+   "incident_id": null
+  },
+  {
+   "event_id": "evt_e7fd6d60eaa541afaf320cfe",
+   "timestamp": "2026-08-13T10:20:49.489456+00:00",
+   "event_type": "CMD_INJ_INDICATOR",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/search",
+   "risk_score": 36.7,
+   "decision": "BLOCK",
+   "reasons": [
+    "Command injection pattern matched: (^|[;&|])\\s*(id|whoami|pwd)\\b"
+   ],
+   "mitre_techniques": [
+    "T1059"
+   ],
+   "incident_id": null
+  },
+  {
+   "event_id": "evt_812930a2762049da8be92880",
+   "timestamp": "2026-08-13T10:20:49.438746+00:00",
+   "event_type": "POLICY_BLOCK",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/search",
+   "risk_score": 36.7,
+   "decision": "BLOCK",
+   "reasons": [
+    "SSRF indicators (HIGH)",
+    "History of related attacks on this subject"
+   ],
+   "mitre_techniques": [
+    "T1499"
+   ],
+   "incident_id": null
+  },
+  {
+   "event_id": "evt_bd04c93f272345ce8b0bd614",
+   "timestamp": "2026-08-13T10:20:49.437067+00:00",
+   "event_type": "SSRF_INDICATOR",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/search",
+   "risk_score": 36.7,
+   "decision": "BLOCK",
+   "reasons": [
+    "SSRF target detected: 169.254.169.254"
+   ],
+   "mitre_techniques": [
+    "T1190"
+   ],
+   "incident_id": null
+  },
+  {
+   "event_id": "evt_bcc5c8a15c944b0c83ef3106",
+   "timestamp": "2026-08-13T10:20:49.383689+00:00",
+   "event_type": "POLICY_BLOCK",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/search",
+   "risk_score": 31.7,
+   "decision": "BLOCK",
+   "reasons": [
+    "Path traversal indicators (HIGH)"
+   ],
+   "mitre_techniques": [
+    "T1499"
+   ],
+   "incident_id": null
+  },
+  {
+   "event_id": "evt_f59a0bf31bcb4c13bd0f83b8",
+   "timestamp": "2026-08-13T10:20:49.381942+00:00",
+   "event_type": "PATH_TRAVERSAL",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/search",
+   "risk_score": 31.7,
+   "decision": "BLOCK",
+   "reasons": [
+    "Path traversal sequences detected (../ or encodings)"
+   ],
+   "mitre_techniques": [
+    "T1190"
+   ],
+   "incident_id": "4c2422e2-1ec6-4fbe-8f96-96c5323c6b7b"
+  },
+  {
+   "event_id": "evt_d81777bad6634c03bd36ea09",
+   "timestamp": "2026-08-13T10:20:49.329476+00:00",
+   "event_type": "POLICY_BLOCK",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/search",
+   "risk_score": 31.7,
+   "decision": "BLOCK",
+   "reasons": [
+    "SQL injection indicators (HIGH)"
+   ],
+   "mitre_techniques": [
+    "T1499"
+   ],
+   "incident_id": null
+  },
+  {
+   "event_id": "evt_c3a9b1e21def40efad01d7ee",
+   "timestamp": "2026-08-13T10:20:49.327519+00:00",
+   "event_type": "SQLI_INDICATOR",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/search",
+   "risk_score": 31.7,
+   "decision": "BLOCK",
+   "reasons": [
+    "SQL injection pattern matched: \\bor\\s+['\\\"]?\\s*1\\s*=\\s*1\\b"
+   ],
+   "mitre_techniques": [
+    "T1190"
+   ],
+   "incident_id": "4c2422e2-1ec6-4fbe-8f96-96c5323c6b7b"
+  },
+  {
+   "event_id": "evt_04ed927d6a0a4e34b584fd6b",
+   "timestamp": "2026-08-13T10:20:49.251570+00:00",
+   "event_type": "POLICY_BLOCK",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/admin/users",
+   "risk_score": 31.7,
+   "decision": "BLOCK",
+   "reasons": [
+    "Admin endpoint probing (HIGH)"
+   ],
+   "mitre_techniques": [
+    "T1499"
+   ],
+   "incident_id": null
+  },
+  {
+   "event_id": "evt_be59483db35c48afb093cb9a",
+   "timestamp": "2026-08-13T10:20:49.248951+00:00",
+   "event_type": "DETECTION",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/admin/users",
+   "risk_score": 31.7,
+   "decision": "BLOCK",
+   "reasons": [
+    "Non-privileged subject accessed admin path"
+   ],
+   "mitre_techniques": [
+    "T1078",
+    "T1083"
+   ],
+   "incident_id": null
+  },
+  {
+   "event_id": "evt_26961d6247be45f6afa5a02e",
+   "timestamp": "2026-08-13T10:20:49.160762+00:00",
+   "event_type": "POLICY_BLOCK",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/api/users/:id",
+   "risk_score": 39.8,
+   "decision": "BLOCK",
+   "reasons": [
+    "BOLA/IDOR access attempt (HIGH)"
+   ],
+   "mitre_techniques": [
+    "T1499"
+   ],
+   "incident_id": null
+  },
+  {
+   "event_id": "evt_4e1ad343d9ac4062b7860299",
+   "timestamp": "2026-08-13T10:20:49.157678+00:00",
+   "event_type": "BOLA_ATTEMPT",
+   "severity": "HIGH",
+   "actor_id": "5e442389-2910-4ba5-b9c2-dc891f438c0b",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/api/users/:id",
+   "risk_score": 39.8,
+   "decision": "BLOCK",
+   "reasons": [
+    "Subject 5e442389-2910-4ba5-b9c2-dc891f438c0b accessed resource /api/users/2 owned by another subject"
+   ],
+   "mitre_techniques": [
+    "T1078",
+    "T1083"
+   ],
+   "incident_id": "6edb2adf-b0c2-4f03-8fda-7e047bc04e22"
+  },
+  {
+   "event_id": "evt_73a2ba6ff3d84dfe978d0b47",
+   "timestamp": "2026-08-13T10:20:48.995659+00:00",
+   "event_type": "SENSITIVE_OUTPUT",
+   "severity": "HIGH",
+   "actor_id": "189464bc-997c-4d96-b2c8-507306db96ff",
+   "source_ip": "127.0.0.1",
+   "endpoint": "/api/users/:id",
+   "risk_score": 3.8,
+   "decision": "REDACT",
+   "reasons": [
+    "Sensitive data detected in upstream response and redacted"
+   ],
+   "mitre_techniques": [
+    "T1041"
+   ],
+   "incident_id": "6edb2adf-b0c2-4f03-8fda-7e047bc04e22"
+  }
+ ],
+ "_responses": [],
+ "_ml_train": {
+  "status": 200,
+  "body": "{'name': 'aegis-1', 'algorithm': 'isolation_forest+random_forest', 'version': 1, 'status': 'active', 'metrics': {'training_size': 1500, 'test_size': 450, 'eval_frac': 0.3, 'isolation_forest_trained_on': 'train_split_only', 'attack_ratio': 0.25, 'random_forest': {'precision': 1.0, 'recall': 1.0, 'f1'"
+ },
+ "_ml_models": {
+  "status": 200,
+  "count": 1
+ },
+ "_payment_invoke": {
+  "status": 200,
+  "decision": "REQUIRE_APPROVAL",
+  "approval_id": "a83c7104-c83a-44fc-8786-1ab77cb15ac4"
+ },
+ "_payment_approve": {
+  "status": 200,
+  "body": "{'approval_id': 'a83c7104-c83a-44fc-8786-1ab77cb15ac4', 'status': 'approved', 'result': {'status': 'success', 'result': {'payment_id': 7001, 'amount': 5000}}}"
+ },
+ "_approvals_list": {
+  "status": 200,
+  "count": 1
+ },
+ "_attack_lab": {
+  "exit_code": 0,
+  "stdout_tail": "['API-016', 'ML-001']                    expected: 403 BLOCK API-016\n[PASS] direct_prompt_injection      -> HTTP 202 decision=REQUIRE_REVIEW rules=['LLM-001', 'LLM-002', 'ML-001' expected: 202 REQUIRE_REVIEW LLM-001\n[PASS] jailbreak_attempt            -> HTTP 202 decision=REQUIRE_REVIEW rules=['LLM-001', 'LLM-003', 'ML-001' expected: 202 REQUIRE_REVIEW LLM-003\n[PASS] system_prompt_extraction     -> HTTP 202 decision=REQUIRE_REVIEW rules=['LLM-002', 'ML-001']           expected: 202 REQUIRE_REVIEW LLM-002\n[PASS] sensitive_extraction_llm     -> HTTP 202 decision=REQUIRE_REVIEW rules=['LLM-005', 'ML-001']           expected: 202 REQUIRE_REVIEW LLM-005\n[PASS] tool_manipulation_prompt     -> HTTP 202 decision=REQUIRE_REVIEW rules=['LLM-006', 'ML-001']           expected: 202 REQUIRE_REVIEW LLM-006\n[PASS] malicious_tool_call          -> HTTP 403 decision=BLOCK                                                expected: 403 BLOCK tool denied\n[PASS] cross_subject_tool_call      -> HTTP 403 decision=BLOCK                                                expected: 403 BLOCK cross-subject\n[PASS] large_payment_approval       -> HTTP 200 decision=REQUIRE_APPROVAL                                     expected: 200 REQUIRE_APPROVAL\n[PASS] data_exfiltration            -> HTTP 202 decision=REQUIRE_REVIEW rules=['LLM-005', 'ML-001']           expected: 202 REQUIRE_REVIEW LLM-005\n\nResults summary:\n  PASS    brute_force_login            actual=10 x 401 then 429 (statuses=[401, 401, 401, 401, 401, 401, 401, 401, 401, 401, 429])\n  PASS    sql_injection                actual=HTTP 403 decision=BLOCK rules=['API-006', 'ML-001']\n  PASS    path_traversal               actual=HTTP 403 decision=BLOCK rules=['API-005', 'ML-001']\n  PASS    ssrf_attempt                 actual=HTTP 403 decision=BLOCK rules=['API-008', 'ML-001']\n  PASS    command_injection            actual=HTTP 403 decision=BLOCK rules=['API-007', 'ML-001']\n  PASS    admin_probe                  actual=HTTP 403 decision=BLOCK rules=['API-017', 'ML-001']\n  PASS    bola_attempt                 actual=HTTP 403 decision=BLOCK rules=['API-016', 'ML-001']\n  PASS    direct_prompt_injection      actual=HTTP 202 decision=REQUIRE_REVIEW rules=['LLM-001', 'LLM-002', 'ML-001']\n  PASS    jailbreak_attempt            actual=HTTP 202 decision=REQUIRE_REVIEW rules=['LLM-001', 'LLM-003', 'ML-001']\n  PASS    system_prompt_extraction     actual=HTTP 202 decision=REQUIRE_REVIEW rules=['LLM-002', 'ML-001']\n  PASS    sensitive_extraction_llm     actual=HTTP 202 decision=REQUIRE_REVIEW rules=['LLM-005', 'ML-001']\n  PASS    tool_manipulation_prompt     actual=HTTP 202 decision=REQUIRE_REVIEW rules=['LLM-006', 'ML-001']\n  PASS    malicious_tool_call          actual=HTTP 403 decision=BLOCK\n  PASS    cross_subject_tool_call      actual=HTTP 403 decision=BLOCK\n  PASS    large_payment_approval       actual=HTTP 200 decision=REQUIRE_APPROVAL\n  PASS    data_exfiltration            actual=HTTP 202 decision=REQUIRE_REVIEW rules=['LLM-005', 'ML-001']\n",
+  "stderr_tail": ""
+ }
+}

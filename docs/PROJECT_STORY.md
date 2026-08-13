@@ -107,7 +107,7 @@ Terraform modules for VPC, WAF, ALB, ECS (backend + worker tasks), private RDS, 
 |------|-------|
 | Controlled attack scenarios | 16/16 PASS |
 | Encoding bypass regressions | 15/15 PASS |
-| Backend tests | 170 collected |
+| Backend tests | 220 collected (at 2026-08-13 audit) |
 | Mypy / Ruff | Clean |
 | AWS deployed | No |
 | ML | Synthetic — pipeline real |

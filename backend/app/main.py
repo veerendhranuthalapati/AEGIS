@@ -7,7 +7,9 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from prometheus_client import generate_latest, CONTENT_TYPE_LATEST
+from sqlalchemy import text
 
 from app.api.v1 import (
     analytics,
@@ -39,9 +41,11 @@ _in_process_worker_task: asyncio.Task | None = None
 async def lifespan(app: FastAPI):
     global _in_process_worker_task
     from app.security.llm.analyzer import close_llm_analyzer, init_llm_analyzer
+    from app.llm.factory import close_llm_provider, init_llm_provider
     from app.worker.main import run_worker_forever
 
     init_llm_analyzer(settings)
+    init_llm_provider(settings)
     if os.environ.get("AEGIS_IN_PROCESS_WORKER", "true").lower() == "true":
         _in_process_worker_task = asyncio.create_task(
             run_worker_forever(async_session_factory, settings)
@@ -56,6 +60,7 @@ async def lifespan(app: FastAPI):
         except asyncio.CancelledError:
             pass
     await close_llm_analyzer()
+    await close_llm_provider()
     await dispose_engine()
 
 
@@ -100,7 +105,34 @@ app.include_router(settings_router.router, prefix=API_PREFIX)
 
 @app.get("/health")
 async def health():
+    """Process liveness — does not probe dependencies."""
     return {"status": "ok", "app": settings.app_name, "version": settings.version}
+
+
+@app.get("/ready")
+async def ready():
+    """Readiness — verifies PostgreSQL connectivity."""
+    from app.database.session import async_session_factory
+
+    try:
+        async with async_session_factory() as session:
+            await session.execute(text("SELECT 1"))
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("readiness.db_unavailable", error=str(exc))
+        return JSONResponse(
+            status_code=503,
+            content={
+                "status": "not_ready",
+                "reason": "database_unavailable",
+                "app": settings.app_name,
+            },
+        )
+    return {
+        "status": "ready",
+        "app": settings.app_name,
+        "version": settings.version,
+        "database": "ok",
+    }
 
 
 @app.get("/metrics")

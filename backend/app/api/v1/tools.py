@@ -5,6 +5,7 @@ from typing import Annotated
 
 import structlog
 from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.responses import JSONResponse
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -167,11 +168,14 @@ async def invoke_tool(
             status="denied",
         )
         await session.commit()
-        return ToolInvokeResponse(
-            decision="BLOCK",
-            risk_score=decision.risk_score,
-            reasons=decision.reasons,
-            requires_approval=False,
+        return JSONResponse(
+            status_code=403,
+            content=ToolInvokeResponse(
+                decision="BLOCK",
+                risk_score=decision.risk_score,
+                reasons=decision.reasons,
+                requires_approval=False,
+            ).model_dump(),
         )
 
     if decision.decision == "REQUIRE_APPROVAL":

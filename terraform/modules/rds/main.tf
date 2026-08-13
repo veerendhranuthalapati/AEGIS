@@ -1,5 +1,4 @@
 variable "environment" { type = string }
-variable "vpc_id" { type = string }
 variable "private_subnet_ids" { type = list(string) }
 variable "db_security_group_id" { type = string }
 variable "master_username" { type = string }
@@ -34,7 +33,7 @@ resource "aws_db_instance" "main" {
   db_subnet_group_name        = aws_db_subnet_group.main.name
   publicly_accessible         = false
   backup_retention_period     = var.backup_retention_period
-  skip_final_snapshot       = var.skip_final_snapshot
+  skip_final_snapshot         = var.skip_final_snapshot
   deletion_protection         = var.deletion_protection
   multi_az                    = false
 }

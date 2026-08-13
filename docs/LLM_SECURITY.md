@@ -17,9 +17,11 @@ Policy-driven: ALLOW, BLOCK, REQUIRE_REVIEW, REDACT output fields.
 
 ## Upstream
 
-**Status: MOCK / ECHO**
+**Default: MOCK MODE** (`LLM_PROVIDER=mock`) — deterministic `MockProvider`, no external API.
 
-The development stack does not call external LLM APIs. The mock upstream echoes prompts for testing.
+**Optional: REAL LLM MODE** (`LLM_PROVIDER=real` + `LLM_API_KEY`) — OpenAI-compatible provider behind the same security pipeline.
+
+See [REAL_LLM_INTEGRATION.md](REAL_LLM_INTEGRATION.md) for architecture, configuration, and testing.
 
 ## UI behavior
 

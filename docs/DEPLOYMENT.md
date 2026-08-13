@@ -12,6 +12,18 @@ docker compose --profile frontend up -d
 
 Services: `postgres`, `mock-api`, `backend`, `worker`. Frontend on `:3000` (profile `frontend`).
 
+The backend container runs `alembic upgrade head`, **`python -m app.scripts.seed`** (demo users/policies), then uvicorn. Without seed, login and attack lab will fail.
+
+Backend sets `AEGIS_IN_PROCESS_WORKER=false` so the dedicated `worker` container handles correlation (avoids duplicate workers).
+
+Verify:
+
+```powershell
+curl http://127.0.0.1:8000/health
+curl http://127.0.0.1:8100/health
+# Login: POST http://127.0.0.1:8000/api/auth/login {"username":"admin","password":"Admin@1234"}
+```
+
 ## Docker images
 
 - `backend/Dockerfile` — multi-stage, non-root, health check
@@ -44,6 +56,7 @@ Never embed in Terraform source, Dockerfiles, frontend, or Git.
 
 ## Health checks
 
-- Backend: `GET /health`
+- Backend liveness: `GET /health` (process up — does not probe Postgres)
+- Backend readiness: `GET /ready` (returns 503 if database unavailable)
 - Metrics: `GET /metrics` (Prometheus)
 - Frontend nginx: `GET /`

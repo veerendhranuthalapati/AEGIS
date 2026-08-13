@@ -128,6 +128,13 @@ def is_llm_path(path: str) -> bool:
     return any(seg in path for seg in LLM_PATHS)
 
 
+def uses_llm_provider(path: str, method: str) -> bool:
+    """POST chat/completion routes invoke the configured LLM provider."""
+    if method != "POST":
+        return False
+    return path.endswith("/ai/chat") or path.endswith("/llm/completions") or "/ai/chat" in path
+
+
 _shared_client: httpx.AsyncClient | None = None
 _shared_client_lock = asyncio.Lock()
 
@@ -279,6 +286,7 @@ class GatewayService:
             findings=findings,
             ml_anomaly_score=ml_prediction.anomaly_score if ml_prediction else 0.0,
             ml_threat_probability=ml_prediction.threat_probability if ml_prediction else 0.0,
+            ml_available=bool(ml_prediction and ml_prediction.available),
             behavior=behavior_signals,
             data_sensitivity=float(ctx.extra.get("sensitivity_score", 0.0)),
             attack_history=attack_history,
@@ -540,6 +548,89 @@ class GatewayService:
             body_json=body_json,
             headers=dict(resp.headers),
             bytes_size=len(resp.content),
+            latency_ms=latency,
+        )
+
+    # ------------------------------------------------------------------ #
+    async def invoke_llm(self, ctx: RequestContext) -> UpstreamResponse:
+        """Call the configured LLM provider after input security passes."""
+        from app.llm.base import LLMProviderError
+        from app.llm.factory import get_llm_provider
+        from app.llm.prompt import parse_chat_request
+        from app.llm.tool_calls import inspect_llm_tool_calls
+
+        provider = get_llm_provider()
+        chat_req = parse_chat_request(
+            ctx.body_text,
+            ctx.body_json,
+            default_model=self._settings.llm_model or "mock-llm",
+            max_tokens=self._settings.llm_max_output_tokens,
+        )
+        start = time.perf_counter()
+        try:
+            completion = await provider.chat_completion(
+                chat_req,
+                actor_key=ctx.actor_id or ctx.source_ip,
+            )
+        except LLMProviderError as exc:
+            latency = (time.perf_counter() - start) * 1000
+            observe_component("forward", latency)
+            status = 503 if exc.code in ("missing_key", "provider_error", "timeout") else 429
+            if exc.code == "malformed_response":
+                status = 502
+            body = json.dumps(
+                {
+                    "error": exc.code,
+                    "message": str(exc),
+                    "provider": provider.name,
+                    "note": "Deterministic AEGIS security remains active; LLM unavailable.",
+                }
+            )
+            return UpstreamResponse(
+                status_code=status,
+                body_text=body,
+                body_json=json.loads(body),
+                headers={"content-type": "application/json"},
+                bytes_size=len(body),
+                latency_ms=latency,
+            )
+
+        payload = completion.to_gateway_json()
+        ctx.extra["tool_call_count"] = len(completion.tool_calls)
+
+        if completion.tool_calls:
+            inspections = await inspect_llm_tool_calls(
+                self._session,
+                ctx,
+                completion.tool_calls,
+                max_depth=self._settings.llm_max_tool_call_depth,
+            )
+            blocked = [i for i in inspections if i.blocked]
+            payload["aegis_tool_inspection"] = [
+                {
+                    "tool": i.tool_name,
+                    "decision": i.decision,
+                    "risk_score": i.risk_score,
+                    "reasons": i.reasons[:5],
+                }
+                for i in inspections
+            ]
+            if blocked:
+                payload["aegis_tool_blocked"] = True
+                payload["choices"][0]["message"]["content"] = (
+                    "Tool execution blocked by AEGIS security policy."
+                )
+                payload["choices"][0]["message"].pop("tool_calls", None)
+
+        body_text = json.dumps(payload)
+        latency = (time.perf_counter() - start) * 1000
+        observe_component("forward", latency)
+        return UpstreamResponse(
+            status_code=200,
+            body_text=body_text,
+            body_json=payload,
+            headers={"content-type": "application/json"},
+            bytes_size=len(body_text.encode("utf-8")),
             latency_ms=latency,
         )
 

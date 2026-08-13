@@ -75,9 +75,9 @@ resource "aws_lb_listener" "https" {
 
 locals {
   backend_container = {
-    name  = "aegis-backend"
-    image = var.backend_image
-    user  = "10001:10001"
+    name         = "aegis-backend"
+    image        = var.backend_image
+    user         = "10001:10001"
     portMappings = [{ containerPort = 8000, protocol = "tcp" }]
     secrets = [
       { name = "DATABASE_URL", valueFrom = var.database_url_secret_arn },

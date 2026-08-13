@@ -1,0 +1,80 @@
+{
+  "gateway": "http://127.0.0.1:8000",
+  "upstream": "http://127.0.0.1:8100",
+  "requests": 50,
+  "concurrency": 10,
+  "spawn_users": 0,
+  "pace": 0.005,
+  "results": [
+    {
+      "tier": "upstream",
+      "requests": 50,
+      "success": 50,
+      "errors": 0,
+      "success_rate_pct": 100.0,
+      "mean_ms": 4.51,
+      "p50_ms": 4.25,
+      "p90_ms": 5.25,
+      "p95_ms": 5.35,
+      "p99_ms": 6.74,
+      "max_ms": 6.74,
+      "req_per_s": 64.15
+    },
+    {
+      "tier": "aegis",
+      "requests": 50,
+      "success": 50,
+      "errors": 0,
+      "success_rate_pct": 100.0,
+      "mean_ms": 30.72,
+      "p50_ms": 29.94,
+      "p90_ms": 33.77,
+      "p95_ms": 35.41,
+      "p99_ms": 42.49,
+      "max_ms": 42.49,
+      "req_per_s": 21.36
+    },
+    {
+      "tier": "aegis_ml",
+      "requests": 50,
+      "success": 50,
+      "errors": 0,
+      "success_rate_pct": 100.0,
+      "mean_ms": 31.97,
+      "p50_ms": 31.39,
+      "p90_ms": 35.75,
+      "p95_ms": 37.55,
+      "p99_ms": 38.74,
+      "max_ms": 38.74,
+      "req_per_s": 21.55
+    },
+    {
+      "tier": "aegis_llm",
+      "requests": 50,
+      "success": 50,
+      "errors": 0,
+      "success_rate_pct": 100.0,
+      "mean_ms": 28.94,
+      "p50_ms": 28.84,
+      "p90_ms": 31.02,
+      "p95_ms": 31.47,
+      "p99_ms": 32.1,
+      "max_ms": 32.1,
+      "req_per_s": 21.68
+    },
+    {
+      "tier": "aegis_concurrent",
+      "requests": 50,
+      "success": 50,
+      "errors": 0,
+      "success_rate_pct": 100.0,
+      "mean_ms": 235.09,
+      "p50_ms": 185.61,
+      "p90_ms": 489.57,
+      "p95_ms": 513.66,
+      "p99_ms": 525.05,
+      "max_ms": 525.05,
+      "req_per_s": 41.2
+    }
+  ]
+}

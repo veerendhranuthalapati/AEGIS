@@ -21,7 +21,7 @@ from app.core.ids import new_request_id
 from app.core.redact import find_detections
 from app.database import get_session
 from app.gateway.models import RequestContext
-from app.gateway.service import GatewayResult, GatewayService, normalize_endpoint
+from app.gateway.service import GatewayResult, GatewayService, normalize_endpoint, uses_llm_provider
 from app.metrics import observe_request
 from app.models import User
 from app.security.risk.engine import RiskAssessment
@@ -216,14 +216,19 @@ async def proxy(
                     "request_id": request_id,
                     "decision": "REQUIRE_REVIEW",
                     "risk_score": result.risk.score,
+                    "risk_level": result.risk.level,
                     "reasons": result.risk.reasons[:15],
+                    "findings": [f.to_dict() for f in result.findings[:10]],
                     "message": "Request requires human review and was not forwarded.",
                 },
                 headers={"x-aegis-decision": "REQUIRE_REVIEW"},
             )
 
-        # --- forward ---
-        upstream = await gateway.forward(ctx)
+        # --- forward or LLM provider ---
+        if uses_llm_provider(full_path, request.method):
+            upstream = await gateway.invoke_llm(ctx)
+        else:
+            upstream = await gateway.forward(ctx)
 
         # --- post-forward ownership verification (BOLA/IDOR) ---
         bola = gateway.ownership_violation(ctx, upstream)
@@ -314,11 +319,16 @@ async def proxy(
             headers=response_headers,
         )
     except Exception as exc:  # noqa: BLE001
+        from app.config import get_settings as _gs
+        from app.core.redact import sanitize_known_secrets
+
+        safe_error = sanitize_known_secrets(str(exc), _gs().llm_api_key)
         logger.error(
             "gateway.proxy_error",
             request_id=request_id,
             path=full_path,
-            error=str(exc),
+            error=safe_error,
+            error_type=exc.__class__.__name__,
         )
         return JSONResponse(
             status_code=502,

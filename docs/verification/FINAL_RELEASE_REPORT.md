@@ -57,7 +57,7 @@ Double-encoded payloads are decoded up to **two rounds** intentionally to avoid 
 
 | Suite | Result | Notes |
 |-------|--------|-------|
-| Backend pytest | **169 passed** | 170 collected; 1 optional Postgres integration test skipped when DB unavailable (`test_failed_logins_eventually_return_429_postgres`) |
+| Backend pytest | **224 passed / 225 collected** (at 2026-08-13 audit) | 1 optional Postgres integration test skipped when DB unavailable (`test_failed_logins_eventually_return_429_postgres`) |
 | Ruff | **PASS** | `app`, `tests` |
 | Mypy (`app/`) | **0 errors** (was 31) | `backend/mypy.ini` |
 | SQLi-focused unit tests | **PASS** | decode + rules + api_bypass |

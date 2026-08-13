@@ -57,6 +57,10 @@ ML_LATENCY = Histogram(
     "ML inference latency",
     buckets=(0.0005, 0.001, 0.0025, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25),
 )
+ML_DRIFT_ALERTS = Counter(
+    "aegis_ml_drift_alerts_total",
+    "ML drift monitoring alerts raised",
+)
 
 # --- LLM security analyzer ----------------------------------------------- #
 LLM_REQUESTS_TOTAL = Counter(
@@ -125,6 +129,11 @@ def observe_ml(status: str, latency_ms: float) -> None:
     ML_PREDICTIONS_TOTAL.labels(status=status).inc()
     if status == "available":
         ML_LATENCY.observe(latency_ms / 1000.0)
+
+
+def observe_ml_drift(alert_count: int) -> None:
+    if alert_count > 0:
+        ML_DRIFT_ALERTS.inc(alert_count)
 
 
 def observe_llm(

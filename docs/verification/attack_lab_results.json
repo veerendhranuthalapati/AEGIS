@@ -1,0 +1,114 @@
+[
+ {
+  "name": "brute_force_login",
+  "attack_type": "T1110 brute force (login rate limit)",
+  "expected": "10+ x 401 then 429 on login (isolated IP)",
+  "actual": "10 x 401 then 429 (statuses=[401, 401, 401, 401, 401, 401, 401, 401, 401, 401, 429])",
+  "status": "PASS"
+ },
+ {
+  "name": "sql_injection",
+  "attack_type": "SQL injection",
+  "expected": "403 BLOCK API-006",
+  "actual": "HTTP 403 decision=BLOCK rules=['API-006', 'API-013']",
+  "status": "PASS"
+ },
+ {
+  "name": "path_traversal",
+  "attack_type": "Path traversal",
+  "expected": "403 BLOCK API-005",
+  "actual": "HTTP 403 decision=BLOCK rules=['API-005', 'API-013']",
+  "status": "PASS"
+ },
+ {
+  "name": "ssrf_attempt",
+  "attack_type": "SSRF",
+  "expected": "403 BLOCK API-008",
+  "actual": "HTTP 403 decision=BLOCK rules=['API-008', 'API-013']",
+  "status": "PASS"
+ },
+ {
+  "name": "command_injection",
+  "attack_type": "Command injection",
+  "expected": "403 BLOCK API-007",
+  "actual": "HTTP 403 decision=BLOCK rules=['API-007', 'API-013']",
+  "status": "PASS"
+ },
+ {
+  "name": "admin_probe",
+  "attack_type": "Admin endpoint probing",
+  "expected": "403 BLOCK API-017",
+  "actual": "HTTP 403 decision=BLOCK rules=['API-013', 'API-017']",
+  "status": "PASS"
+ },
+ {
+  "name": "bola_attempt",
+  "attack_type": "BOLA/IDOR (cross-subject user resource)",
+  "expected": "403 BLOCK API-016",
+  "actual": "HTTP 403 decision=BLOCK rules=['API-013', 'API-016']",
+  "status": "PASS"
+ },
+ {
+  "name": "direct_prompt_injection",
+  "attack_type": "Prompt injection",
+  "expected": "202 REQUIRE_REVIEW LLM-001",
+  "actual": "HTTP 202 decision=REQUIRE_REVIEW rules=['API-013', 'LLM-001', 'LLM-002']",
+  "status": "PASS"
+ },
+ {
+  "name": "jailbreak_attempt",
+  "attack_type": "Jailbreak",
+  "expected": "202 REQUIRE_REVIEW LLM-003",
+  "actual": "HTTP 202 decision=REQUIRE_REVIEW rules=['API-013', 'LLM-001', 'LLM-003']",
+  "status": "PASS"
+ },
+ {
+  "name": "system_prompt_extraction",
+  "attack_type": "System prompt extraction",
+  "expected": "202 REQUIRE_REVIEW LLM-002",
+  "actual": "HTTP 202 decision=REQUIRE_REVIEW rules=['API-013', 'LLM-002']",
+  "status": "PASS"
+ },
+ {
+  "name": "sensitive_extraction_llm",
+  "attack_type": "Sensitive data extraction via LLM",
+  "expected": "202 REQUIRE_REVIEW LLM-005",
+  "actual": "HTTP 202 decision=REQUIRE_REVIEW rules=['API-013', 'LLM-005']",
+  "status": "PASS"
+ },
+ {
+  "name": "tool_manipulation_prompt",
+  "attack_type": "Tool manipulation via prompt",
+  "expected": "202 REQUIRE_REVIEW LLM-006",
+  "actual": "HTTP 202 decision=REQUIRE_REVIEW rules=['API-013', 'LLM-006']",
+  "status": "PASS"
+ },
+ {
+  "name": "malicious_tool_call",
+  "attack_type": "Unauthorized destructive tool",
+  "expected": "403 BLOCK tool denied",
+  "actual": "HTTP 403 decision=BLOCK",
+  "status": "PASS"
+ },
+ {
+  "name": "cross_subject_tool_call",
+  "attack_type": "Cross-subject tool access (BOLA)",
+  "expected": "403 BLOCK cross-subject",
+  "actual": "HTTP 403 decision=BLOCK",
+  "status": "PASS"
+ },
+ {
+  "name": "large_payment_approval",
+  "attack_type": "High-value payment requiring approval",
+  "expected": "200 REQUIRE_APPROVAL",
+  "actual": "HTTP 200 decision=REQUIRE_APPROVAL",
+  "status": "PASS"
+ },
+ {
+  "name": "data_exfiltration",
+  "attack_type": "Data exfiltration via LLM",
+  "expected": "202 REQUIRE_REVIEW LLM-005",
+  "actual": "HTTP 202 decision=REQUIRE_REVIEW rules=['API-013', 'LLM-005']",
+  "status": "PASS"
+ }
+]

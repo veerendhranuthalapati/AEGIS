@@ -1,0 +1,127 @@
+[
+  {
+    "check": "health_liveness",
+    "status": "PASS",
+    "detail": "{'status': 'ok', 'app': 'AEGIS Security Gateway', 'version': '0.1.0'}"
+  },
+  {
+    "check": "ready_with_db",
+    "status": "PASS",
+    "detail": "{\"status\":\"ready\",\"app\":\"AEGIS Security Gateway\",\"version\":\"0.1.0\",\"database\":\"ok\"}"
+  },
+  {
+    "check": "bola_own_allow",
+    "status": "PASS",
+    "detail": "HTTP 200"
+  },
+  {
+    "check": "bola_cross_block",
+    "status": "PASS",
+    "detail": "HTTP 403 decision=BLOCK"
+  },
+  {
+    "check": "admin_access",
+    "status": "PASS",
+    "detail": "HTTP 200"
+  },
+  {
+    "check": "tool_unauthorized_403",
+    "status": "PASS",
+    "detail": "HTTP 403"
+  },
+  {
+    "check": "tool_cross_subject_403",
+    "status": "PASS",
+    "detail": "HTTP 403 decision=BLOCK"
+  },
+  {
+    "check": "payment_require_approval",
+    "status": "PASS",
+    "detail": "HTTP 200 decision=REQUIRE_APPROVAL"
+  },
+  {
+    "check": "approval_first_200",
+    "status": "PASS",
+    "detail": "HTTP 200"
+  },
+  {
+    "check": "approval_duplicate_409",
+    "status": "PASS",
+    "detail": "HTTP 409"
+  },
+  {
+    "check": "llm_prompt_injection",
+    "status": "PASS",
+    "detail": "HTTP 202 decision=REQUIRE_REVIEW"
+  },
+  {
+    "check": "llm_legit_allow",
+    "status": "PASS",
+    "detail": "HTTP 200 provider=mock"
+  },
+  {
+    "check": "frontend_root",
+    "status": "PASS",
+    "detail": "HTTP 200"
+  },
+  {
+    "check": "frontend_api_proxy",
+    "status": "PASS",
+    "detail": "HTTP 200"
+  },
+  {
+    "check": "frontend_page/",
+    "status": "PASS",
+    "detail": "HTTP 200"
+  },
+  {
+    "check": "frontend_page/dashboard",
+    "status": "PASS",
+    "detail": "HTTP 200"
+  },
+  {
+    "check": "frontend_page/threats",
+    "status": "PASS",
+    "detail": "HTTP 200"
+  },
+  {
+    "check": "frontend_page/incidents",
+    "status": "PASS",
+    "detail": "HTTP 200"
+  },
+  {
+    "check": "frontend_page/api-security",
+    "status": "PASS",
+    "detail": "HTTP 200"
+  },
+  {
+    "check": "frontend_page/llm-security",
+    "status": "PASS",
+    "detail": "HTTP 200"
+  },
+  {
+    "check": "frontend_page/agents",
+    "status": "PASS",
+    "detail": "HTTP 200"
+  },
+  {
+    "check": "frontend_page/policies",
+    "status": "PASS",
+    "detail": "HTTP 200"
+  },
+  {
+    "check": "frontend_page/users",
+    "status": "PASS",
+    "detail": "HTTP 200"
+  },
+  {
+    "check": "frontend_page/ml",
+    "status": "PASS",
+    "detail": "HTTP 200"
+  },
+  {
+    "check": "frontend_page/audit",
+    "status": "PASS",
+    "detail": "HTTP 200"
+  }
+]

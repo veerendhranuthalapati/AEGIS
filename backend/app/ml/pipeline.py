@@ -76,10 +76,10 @@ def train_models(
     X_train, X_test = X[:split], X[split:]
     y_train, y_test = y[:split], y[split:]
 
-    # --- Unsupervised: IsolationForest trains on everything (unlabeled) ---
+    # --- Unsupervised: IsolationForest trains on train split only (no test leakage) ---
     iforest = _isolation_forest()
     start = time.perf_counter()
-    iforest.fit(X)
+    iforest.fit(X_train)
     train_if_latency = (time.perf_counter() - start) * 1000
 
     anomaly_scores = _anomaly_to_score(iforest.decision_function(X_test))
@@ -116,6 +116,7 @@ def train_models(
         "training_size": int(len(df)),
         "test_size": n_test,
         "eval_frac": eval_frac,
+        "isolation_forest_trained_on": "train_split_only",
         "attack_ratio": float(y.mean()),
         "random_forest": {
             "precision": float(precision_score(y_test, rf_pred, zero_division=0)),

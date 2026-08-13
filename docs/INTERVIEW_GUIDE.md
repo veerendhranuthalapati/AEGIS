@@ -216,7 +216,7 @@ GitHub Actions: backend pytest/ruff/mypy/pip-audit; frontend test/build; terrafo
 
 | Metric | Value |
 |--------|-------|
-| Backend tests | 170 collected |
+| Backend tests | 220 collected (at 2026-08-13 audit) |
 | Attack lab | 16/16 |
 | Bypass suite | 15/15 |
 | Gateway overhead | ~215 ms local serial |

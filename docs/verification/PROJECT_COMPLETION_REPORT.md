@@ -87,7 +87,7 @@ See [LLM_SECURITY.md](../LLM_SECURITY.md).
 
 | Suite | Result (2026-08-13) |
 |-------|---------------------|
-| pytest | 169 passed / 170 collected* |
+| pytest | At 2026-08-13 audit: **225 collected**, **224 pass** locally without live Postgres (1 postgres rate-limit integration test requires DB) |
 | Ruff | PASS |
 | Mypy | 0 errors |
 | Frontend | 7/7 PASS, build PASS |
@@ -97,7 +97,7 @@ See [LLM_SECURITY.md](../LLM_SECURITY.md).
 | pip-audit | No known vulnerabilities |
 | Bandit `-lll` | PASS |
 
-\*One postgres integration test fails when DB polluted by prior brute-force run; CI expects 170/170 on fresh Postgres.
+\*At 2026-08-13 audit: one postgres integration test (`test_failed_logins_eventually_return_429_postgres`) fails when Postgres is unavailable; CI expects full pass on fresh Postgres.
 
 Full matrix: [FINAL_TEST_MATRIX.md](FINAL_TEST_MATRIX.md).
 

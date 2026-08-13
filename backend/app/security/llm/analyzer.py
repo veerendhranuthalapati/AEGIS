@@ -136,7 +136,7 @@ class LlmAnalyzer:
     def enabled(self) -> bool:
         return (
             self._settings.llm_analyzer_enabled
-            and self._settings.llm_provider != "none"
+            and self._settings.llm_analyzer_provider != "none"
             and bool(self._settings.llm_api_key)
         )
 

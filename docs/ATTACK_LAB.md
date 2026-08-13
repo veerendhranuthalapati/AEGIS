@@ -16,7 +16,7 @@ Exit code 0 = all scenarios PASS.
 
 **CI:** GitHub Actions job `attack-lab` runs `run_all.py` and `bypass_tests/run_bypass.py` against PostgreSQL + mock-api + seeded AEGIS gateway (no AWS, no external LLM).
 
-**Latest verification (2026-08-13):** 16/16 PASS on direct dev stack and Docker Compose backend. Evidence: `docs/verification/attack_lab_results.json`.
+**Latest verification (2026-08-13):** Strict assertions added in `scenario_expectations.py`. Live re-run against Docker stack: **NOT VERIFIED** (Docker daemon unavailable on audit host). Prior 16/16 results used permissive criteria — see `AUDIT_REMEDIATION_REPORT.md`.
 
 ## Scenarios (16)
 
@@ -24,7 +24,14 @@ Includes: legitimate traffic, API enumeration, BOLA, SQLi, SSRF, command injecti
 
 ## Strict validation
 
-`run_all.py` requires expected HTTP status codes and decision types — a `401` on brute-force does **not** count as rate-limit success.
+`run_all.py` uses `scenario_expectations.py` to require, per scenario:
+
+- Expected HTTP status code(s)
+- Expected security `decision` (e.g. `BLOCK`, `REQUIRE_REVIEW`)
+- Expected `rule_id`(s) or reason substrings — **wrong-reason blocks fail** (e.g. SQLi payload blocked by auth failure)
+- Brute force: ≥10 failed logins (401) then rate limit (429)
+
+Infrastructure failures (connection errors, 5xx without security decision) do **not** count as PASS.
 
 ## Results
 
