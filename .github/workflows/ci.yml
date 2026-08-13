@@ -48,7 +48,7 @@ jobs:
       UPSTREAM_BASE_URL: ${{ env.CI_UPSTREAM_URL }}
       ENVIRONMENT: test
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-python@v5
         with:
@@ -85,7 +85,7 @@ jobs:
       run:
         working-directory: frontend
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-node@v4
         with:
@@ -113,7 +113,7 @@ jobs:
       run:
         working-directory: terraform/environments/dev
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: hashicorp/setup-terraform@v3
         with:
@@ -132,7 +132,7 @@ jobs:
     name: Docker (build, scan)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Build backend image
         run: docker build -t aegis-backend:ci ./backend
@@ -171,7 +171,7 @@ jobs:
       ENVIRONMENT: test
       AEGIS_IN_PROCESS_WORKER: "true"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-python@v5
         with:
@@ -213,7 +213,7 @@ jobs:
     name: Security scanners
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-python@v5
         with:
